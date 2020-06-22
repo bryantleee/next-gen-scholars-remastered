@@ -515,12 +515,10 @@ class College(db.Model):
             college.net_price_75001_110000 = result[y+'.cost.net_price.'+inst_type_to_get+'.by_income_level.75001-110000']
             college.net_price_110001_plus = result[y+'.cost.net_price.'+inst_type_to_get+'.by_income_level.110001-plus']
 
-
-
             ivy_leagues = {'Cornell University', 'Dartmouth University', 'Brown University', 'Columbia University',
                 'University of Pennsylvania', 'Princeton University', 'Yale University', 'Harvard University'}
 
-            if college.description == '':
+            if college.description:
                 default = (college.institution_type).capitalize() + ' Instiution in ' + college.school_state
                 college.description = 'Ivy League Institution' if college.name in ivy_leagues else default   
                 
