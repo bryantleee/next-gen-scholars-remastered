@@ -204,6 +204,7 @@ table.selectable tr:hover {
 
 .college_info{
   text-align:center;
+  justify-content:space-evenly;
   margin-bottom: 15px !important;
 }
 .flex_wrapper{
@@ -212,7 +213,15 @@ table.selectable tr:hover {
   width: 100%;
 }
 
+.college_main_header {
+  font-size:4.5em; 
+  color:white; 
+  text-align:center; 
+  padding-top:100px; 
+  padding-bottom:30px; 
+  font-family: 'IBM Plex Serif', serif;
 
+}
 .stat_box{
   vertical-align: middle;
   text-align: center;
@@ -229,4 +238,26 @@ table.selectable tr:hover {
 
 .college_info_table{
   text-align: center !important;
+}
+
+.college-column{
+  margin: 0 auto;
+  text-align: center;
+  margin: auto;
+  justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 1200px) {
+  .medium_stat_title {
+    font-size: 25px;
+  }
+  .college_main_header {
+    font-size:2.5em; 
+    color:white; 
+    text-align:center; 
+    padding-top:100px; 
+    padding-bottom:30px; 
+    font-family: 'IBM Plex Serif', serif;
+  
+  }
 }
