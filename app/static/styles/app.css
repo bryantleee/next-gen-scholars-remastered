@@ -204,9 +204,9 @@ table.selectable tr:hover {
 
 .college_info{
   text-align:center;
-  justify-content:space-evenly;
   margin-bottom: 15px !important;
 }
+
 .flex_wrapper{
   justify-content: center;
   align-items: center;
@@ -220,8 +220,8 @@ table.selectable tr:hover {
   padding-top:100px; 
   padding-bottom:30px; 
   font-family: 'IBM Plex Serif', serif;
-
 }
+
 .stat_box{
   vertical-align: middle;
   text-align: center;
@@ -261,3 +261,4 @@ table.selectable tr:hover {
   
   }
 }
+

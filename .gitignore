@@ -15,6 +15,7 @@ dist
 .idea
 dump.rdb
 client_secret.json
-.vscode
+
+start.sh
+local_url.txt
 notes
-latest.dump
