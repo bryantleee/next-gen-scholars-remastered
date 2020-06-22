@@ -135,6 +135,89 @@ table.selectable tr:hover {
   bottom: -40px;
 }
 
+
+.college_link{
+  text-align: center;
+  color: white;
+}
+
+.college_link_icon_padding{
+  margin-top:10px;
+}
+
+.college_link:hover{
+  cursor:pointer;
+}
+
+.uni_web{
+  background-color:#d00014 !important;
+}
+.uni_web:hover{
+  background-color:#d14754 !important;
+}
+
+.uni_cost{
+  background-color:#00abbc !important;
+}
+.uni_cost:hover{
+  background-color:#56c4ce !important;
+
+}
+
+.uni_scd{
+  background-color:#5f9d30 !important;
+}
+.uni_scd:hover{
+  background-color:#8ec466 !important;
+
+}
+
+.link_icon{
+  color:white;
+  font-size: 40px !important;
+  padding-left: 0px; 
+}
+
+.big_stat_title{
+  font-size: 55px;
+  margin-bottom:0px;
+}
+.big_stat_subtitle{
+  font-size: 15px;
+  margin-top:0px;
+}
+
+.medium_stat_title{
+  font-size:34px;
+  margin:0px;
+}
+.medium_stat_subtitle{
+  margin:0px;
+  font-size:13px;
+
+}
+
+.college_info_section_header{
+  color:#1A85D6 !important;
+  margin-bottom:5px;
+}
+
+.college_info{
+  text-align:center;
+  margin-bottom: 15px !important;
+}
+.flex_wrapper{
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+
+.stat_box{
+  vertical-align: middle;
+  text-align: center;
+}
+
 .resource_item{
   background-color: red;
   transition: background-color .1s ease .1s ease;
@@ -142,4 +225,8 @@ table.selectable tr:hover {
 .resource_div:hover{
   cursor:pointer;
   background-color: rgba(34,36,38,.1);
+}
+
+.college_info_table{
+  text-align: center !important;
 }

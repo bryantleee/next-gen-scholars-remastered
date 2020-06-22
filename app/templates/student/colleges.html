@@ -37,8 +37,21 @@
                     <tr onclick="window.location.href = '{{ url_for('student.view_college_profile', college_id=c.id) }}';">
                         <td>{{ c.name }}</td>
                         <td>{{ c.description }}</td>
-                        <td>{{ c.regular_deadline.strftime('%m-%d-%Y')}} </td>
-                        <td>{{ c.early_deadline.strftime('%m-%d-%Y')}} </td>
+                          <td>
+                                {% if c.regular_deadline is none %}
+                                    No Data
+                                {% else %}
+                                    {{ c.regular_deadline.strftime('%m-%d-%Y') }}     
+                                {% endif %} 
+                            </td>
+
+                            <td>
+                                {% if c.early_deadline is none %}
+                                    No Data
+                                {% else %}
+                                    {{ c.early_deadline.strftime('%m-%d-%Y') }}
+                                {% endif %} 
+                            </td>
                     </tr>
                 {% endfor %}
                 </tbody>

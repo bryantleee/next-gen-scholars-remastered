@@ -20,7 +20,8 @@ from ..decorators import admin_required
 from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML, 
                       ChecklistItem, TestName, College, Notification, SMSAlert,
-                      ScattergramData, Acceptance, Scholarship, Resource, fix_url)
+                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
+                      get_colors, Resource)
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -138,6 +139,7 @@ def upload_college_file():
                         image = row[7]
                     )
                     College.retrieve_college_info(college)
+    
                 # else update the existing college
                 else:
                     college.description = row[1]
@@ -542,6 +544,7 @@ def delete_test_name():
 @login_required
 @counselor_required
 def add_college():
+   
     # Allows a counselor to add a college profile.
     form = AddCollegeProfileForm()
     if form.validate_on_submit():
@@ -550,6 +553,7 @@ def add_college():
             # College didn't already exist in database, so add it.
             college = College(
                 name=form.name.data,
+                scorecard_id=interpret_scorecard_input(form.college_scorecard_url.data),
                 description=form.description.data,
                 early_deadline=form.early_deadline.data,
                 regular_deadline=form.regular_deadline.data,
@@ -566,7 +570,11 @@ def add_college():
                 room_and_board = 0,
                 sat_score_average_overall = 0,
                 act_score_average_overall = 0)
-            College.retrieve_college_info(college)
+            add_worked = College.retrieve_college_info(college)
+            if not add_worked:
+                flash('Input Error. Please check your form over.')
+                return render_template(
+                    'counselor/add_college.html', form=form, header='Add College Profile')
             db.session.add(college)
         
         else:
@@ -578,20 +586,20 @@ def add_college():
         'counselor/add_college.html', form=form, header='Add College Profile')
 
 
-# @counselor.route('/edit_college', methods=['GET', 'POST'])
-# @login_required
-# @counselor_required
-# def edit_college_step1():
-#     # Allows a counselor to choose which college they want to edit.
-#     form = EditCollegeProfileStep1Form()
-#     if form.validate_on_submit():
-#         college = College.query.filter_by(name=form.name.data.name).first()
-#         return redirect(
-#             url_for('counselor.edit_college_step2', college_id=college.id))
-#     return render_template(
-#         'counselor/edit_college.html',
-#         form=form,
-#         header='Edit College Profile')
+@counselor.route('/edit_college', methods=['GET', 'POST'])
+@login_required
+@counselor_required
+def edit_college_step1():
+    # Allows a counselor to choose which college they want to edit.
+    form = EditCollegeProfileStep1Form()
+    if form.validate_on_submit():
+        college = College.query.filter_by(name=form.name.data.name).first()
+        return redirect(
+            url_for('counselor.edit_college_step2', college_id=college.id))
+    return render_template(
+        'counselor/edit_college.html',
+        form=form,
+        header='Edit College Profile')
 
 
 @counselor.route('/edit_college/<int:college_id>', methods=['GET', 'POST'])
@@ -604,6 +612,7 @@ def edit_college_step2(college_id):
     form = EditCollegeProfileStep2Form(
         name=old_college.name,
         description=old_college.description,
+        college_scorecard_url=old_college.scorecard_id,
         regular_deadline=old_college.regular_deadline,
         early_deadline=old_college.early_deadline,
         scholarship_deadline=old_college.scholarship_deadline,
@@ -613,6 +622,7 @@ def edit_college_step2(college_id):
     if form.validate_on_submit():
         college = old_college
         college.name = form.name.data
+        college.scorecard_id=interpret_scorecard_input(form.college_scorecard_url.data)
         college.description = form.description.data
         college.early_deadline = form.early_deadline.data
         college.regular_deadline = form.regular_deadline.data
@@ -627,6 +637,7 @@ def edit_college_step2(college_id):
         return redirect(url_for('counselor.colleges'))
     return render_template(
         'counselor/edit_college.html',
+        college_id=college_id,
         form=form,
         header='Edit College Profile')
 
@@ -647,6 +658,16 @@ def delete_college():
         'counselor/delete_college.html',
         form=form,
         header='Delete College Profile')
+
+@counselor.route('/delete_college/<int:college_id>', methods=['GET', 'POST'])
+@login_required
+@counselor_required
+def delete_specific_college(college_id):
+    # Allows a counselor to delete a specific college profile.
+    college = College.query.filter_by(id=college_id).first()
+    db.session.delete(college)
+    db.session.commit()
+    return redirect(url_for('counselor.colleges')) 
 
 
 @counselor.route('/alerts', methods=['GET', 'POST'])
@@ -935,8 +956,7 @@ def resources():
     """View all Resources."""
     resources = Resource.query.all()
     editable_html_obj = EditableHTML.get_editable_html('resources')
-    colors = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink']
-    return render_template('counselor/resources.html', resources=resources, editable_html_obj=editable_html_obj, colors=colors)
+    return render_template('counselor/resources.html', resources=resources, editable_html_obj=editable_html_obj, colors=get_colors())
 
 @login_required
 @counselor.route(

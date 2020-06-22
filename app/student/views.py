@@ -16,7 +16,8 @@ from .forms import (
     AddAcceptanceForm, EditAcceptanceForm, AddStudentScholarshipForm, EditStudentScholarshipForm)
 from ..models import (User, College, Essay, TestScore, ChecklistItem,
                       RecommendationLetter, TestName, Notification,
-                      Acceptance, Scholarship, fix_url)
+                      Acceptance, Scholarship, get_state_name_from_abbreviation,
+                      get_colors, fix_url)
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -526,9 +527,8 @@ def delete_acceptance(item_id):
 def resources():
     """View all Resources."""
     resources = Resource.query.all()
-    colors = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink']
     editable_html_obj = EditableHTML.get_editable_html('resources')
-    return render_template('student/resources.html', resources=resources, editable_html_obj=editable_html_obj, colors=colors)
+    return render_template('student/resources.html', resources=resources, editable_html_obj=editable_html_obj, colors=get_colors())
     
 
 # college methods
@@ -1160,10 +1160,16 @@ def update_checklist_item(item_id):
 @login_required
 def view_college_profile(college_id):
     college = College.query.filter_by(id=college_id).first()
+    if college.description == '':
+        return render_template('/errors/invalid_college_profile.html')
+
+    state_full_name = get_state_name_from_abbreviation(college.school_state)
+    website_url = fix_url(college.school_url)
+    net_cost_url = fix_url(college.price_calculator_url)
     return render_template(
-        'main/college_profile.html',
-        pageType='college_profile',
-        college=college)
+        'main/college_profile.html', website_url=website_url,
+        net_cost_url=net_cost_url, pageType='college_profile',
+        college=college, state_full_name=state_full_name)
 
 @student.route('/scholarship_profile/<int:scholarship_id>')
 @login_required
