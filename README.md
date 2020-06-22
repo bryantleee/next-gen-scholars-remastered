@@ -1,6 +1,10 @@
-# Next Generation Scholars
+# Next Generation Scholars <em>Remastered</em>
 
 ## Team Members
+### Dream Team
+* Kyle Sayers
+* Bryant Lee
+
 #### UPenn
 * Client-facing Project Manager: Hana Pearlman
 * Team-facing Project Manager: Katie Jiang
@@ -12,17 +16,13 @@
 * Codirectors: Emily Everett and Melissa Gu
 * Wallace He, Jonathan Huang, Katrina Kuhn, Tracy Nguyen
 
-### Dream Team
-* Kyle Sayers
-* Bryant Lee
-
 ## Setting up for Python 3
 __Must use Python3__
 
 #####  Clone the repo
 
 ```bash
-$ git clone https://github.com/hack4impact/next-gen-scholars.git
+$ git clone https://github.com/bryantleee/next-gen-scholars-remastered.git
 $ cd next-gen-scholars
 ```
 
