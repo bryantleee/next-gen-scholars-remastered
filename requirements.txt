@@ -52,9 +52,9 @@ pyparsing==2.1.10
 python-dateutil==2.6.0
 python-editor==1.0.3
 pytz==2017.3
-raygun4py==3.1.4
+raygun4py==4.3.0
 redis==2.10.5
-requests==2.18.4
+requests==2.24.0
 requests-oauthlib==0.8.0
 rq==0.7.1
 rsa==3.4.2
@@ -63,7 +63,7 @@ SQLAlchemy==1.1.5
 traitlets==4.3.2
 twilio==6.12.1
 uritemplate==3.0.0
-urllib3==1.22
+urllib3==1.25.6
 webassets==0.12.1
 Werkzeug==0.11.15
 WTForms==2.1
