@@ -1,7 +1,7 @@
 # Next Generation Scholars <em>Remastered</em>
 
 ## Team Members
-### Dream Team
+#### Dream Team
 * Kyle Sayers
 * Bryant Lee
 
