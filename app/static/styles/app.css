@@ -24,6 +24,11 @@ table.selectable tr:hover {
   cursor: pointer !important;
 }
 
+/* fonts */
+@font-face {
+  font-family: "Avenir-next";
+  src: url(../fonts/avenir-next/AvenirNextLTPro-Regular.otf);
+}
 
 /* Following Material Design Button Code from https://codepen.io/finnhvman/pen/MQyJxV */
 
@@ -143,6 +148,7 @@ table.selectable tr:hover {
 
 .college_link_icon_padding{
   margin-top:10px;
+
 }
 
 .college_link:hover{
@@ -176,6 +182,7 @@ table.selectable tr:hover {
   color:white;
   font-size: 40px !important;
   padding-left: 0px; 
+  margin-left:.25rem;
 }
 
 .big_stat_title{
@@ -260,5 +267,37 @@ table.selectable tr:hover {
     font-family: 'IBM Plex Serif', serif;
   
   }
+}
+
+
+/*index*/
+#main_header{
+  font-size: 35pt;
+  font-family: "Avenir-next",sans-serif;
+  text-shadow: 2px 2px 2px rgba(150,150,150,1);
+}
+#main_header_2{
+  font-family: "Avenir-next",sans-serif;
+  text-shadow: 2px 2px 2px rgba(150,150,150,1);
+  font-size: 18pt;
+}
+
+#main_banner{
+  background-image: url('../images/ngs_test.jpeg'); 
+  background-color:#564359; 
+  padding-top:12%; 
+  padding-bottom:12%; 
+  margin-top:-30px;
+  /* filter: blur(8px);
+  -webkit-filter: blur(8px); */
+}
+
+.parallax_container{
+  /* height: 100%; */
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 

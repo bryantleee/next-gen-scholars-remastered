@@ -532,58 +532,61 @@ class College(db.Model):
             'Stanford University', 'Princeton University',
             'Harvard University', 'Cornell University', 'Yale University',
             'Brown University', 'Dartmouth College', 'New York University',
-            'University of California - Berkeley',
-            'University of California - Los Angeles', 'University of Michigan-Ann Arbor',
+            'University of California-Berkeley', 'University of California-Davis',
+            'University of California-Los Angeles', 'University of Michigan-Ann Arbor',
             'Carnegie Mellon University', 'John Hopkins University',
             'University of Chicago', 'Amherst College', 'Williams College',
             'Massachusetts Institute of Technology',
             'Georgia Institute of Technology',
-            'California Institute of Technology', 'Duke University'
+            'California Institute of Technology', 'Duke University',
+            'University of Redlands', 'University of California-San Diego',
+            'University of California-Santa Cruz', 'Emory University',
+            'American University', 'San Francisco State University'
         }
         early_deadlines = [
-            datetime(2017, 11, 4),
-            datetime(2017, 11, 3),
-            datetime(2017, 10, 26),
-            datetime(2017, 11, 1),
-            datetime(2017, 11, 11),
-            datetime(2017, 11, 13),
-            datetime(2017, 10, 29)
+            datetime(2020, 11, 4),
+            datetime(2020, 11, 3),
+            datetime(2020, 10, 26),
+            datetime(2020, 11, 1),
+            datetime(2020, 11, 11),
+            datetime(2020, 11, 13),
+            datetime(2020, 10, 29)
         ]
         regular_deadlines = [
-            datetime(2017, 12, 31),
-            datetime(2017, 1, 1),
-            datetime(2017, 1, 2),
-            datetime(2017, 1, 3),
-            datetime(2017, 1, 5),
-            datetime(2017, 2, 1),
-            datetime(2017, 1, 14)
+            datetime(2020, 12, 31),
+            datetime(2020, 1, 1),
+            datetime(2020, 1, 2),
+            datetime(2020, 1, 3),
+            datetime(2020, 1, 5),
+            datetime(2020, 2, 1),
+            datetime(2020, 1, 14)
         ]
         fafsa_deadline = [
-            datetime(2017, 12, 31),
-            datetime(2017, 1, 1),
-            datetime(2017, 1, 2),
-            datetime(2017, 1, 3),
-            datetime(2017, 1, 5),
-            datetime(2017, 2, 1),
-            datetime(2017, 1, 14)
+            datetime(2020, 12, 31),
+            datetime(2020, 1, 1),
+            datetime(2020, 1, 2),
+            datetime(2020, 1, 3),
+            datetime(2020, 1, 5),
+            datetime(2020, 2, 1),
+            datetime(2020, 1, 14)
         ]
         acceptance_deadline = [
-            datetime(2017, 12, 31),
-            datetime(2017, 1, 1),
-            datetime(2017, 1, 2),
-            datetime(2017, 1, 3),
-            datetime(2017, 1, 5),
-            datetime(2017, 2, 1),
-            datetime(2017, 1, 14)
+            datetime(2020, 12, 31),
+            datetime(2020, 1, 1),
+            datetime(2020, 1, 2),
+            datetime(2020, 1, 3),
+            datetime(2020, 1, 5),
+            datetime(2020, 2, 1),
+            datetime(2020, 1, 14)
         ]
         scholarship_deadlines = [
-            datetime(2017, 12, 31),
-            datetime(2017, 1, 1),
-            datetime(2017, 1, 2),
-            datetime(2017, 1, 3),
-            datetime(2017, 1, 5),
-            datetime(2017, 2, 1),
-            datetime(2017, 1, 14)
+            datetime(2020, 12, 31),
+            datetime(2020, 1, 1),
+            datetime(2020, 1, 2),
+            datetime(2020, 1, 3),
+            datetime(2020, 1, 5),
+            datetime(2020, 2, 1),
+            datetime(2020, 1, 14)
         ]
 
         images = [

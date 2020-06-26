@@ -31,6 +31,11 @@ import datetime
 import csv
 import io
 import logging
+
+import pandas as pd
+from difflib import get_close_matches
+from math import isnan
+
 # TODO: remove before production?
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
@@ -750,6 +755,7 @@ def upload_scattergram():
         try:
             f = request.files['file']
             contents = f.read()
+            # split here
             lines = contents.split('\r'.encode('utf-8'))
             college_names = set()
             for line in lines[1:]:
