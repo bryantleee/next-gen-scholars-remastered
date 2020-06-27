@@ -2,8 +2,8 @@ import datetime
 from flask import (abort, flash, redirect, render_template, url_for, request,
                    jsonify, Flask)
 from flask_login import current_user, login_required
-from ..models import (TestScore, RecommendationLetter, Interest, 
-    EditableHTML, Essay, College, Major, Resource, StudentProfile, 
+from ..models import (TestScore, RecommendationLetter, Interest,
+    EditableHTML, Essay, College, Major, Resource, StudentProfile,
     ScattergramData, Acceptance, StudentScholarship)
 from .. import db, csrf
 from . import student
@@ -30,7 +30,7 @@ os.environ[
     'OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # TODO: remove before production?
 
 import random #for fake college interest
-import logging 
+import logging
 
 app = Flask(__name__)
 
@@ -91,8 +91,13 @@ def comparer():
         col.act_score_average_overall = int(col.act_score_average_overall)
         col.scatter_link = '/student/college_profile/' + str(col.id)
 
-    return render_template('student/college_comparer.html', user=current_user, 
-        act=act, sat=sat, 
+    if not student_profile.unweighted_gpa:
+        gpa = 'N/A'
+    else:
+        gpa = student_profile.unweighted_gpa
+
+    return render_template('student/college_comparer.html', user=current_user,
+        gpa=gpa, act=act, sat=sat,
         colleges=colleges, authenticated=True)
 
 
@@ -529,7 +534,7 @@ def resources():
     resources = Resource.query.all()
     editable_html_obj = EditableHTML.get_editable_html('resources')
     return render_template('student/resources.html', resources=resources, editable_html_obj=editable_html_obj, colors=get_colors())
-    
+
 
 # college methods
 
@@ -851,7 +856,7 @@ def checklist(student_profile_id):
         checklist_items = [item for item in checklist_items if not item.is_checked]
         app.logger.error('student')
         app.logger.error(checklist_items)
-    
+
     if student_profile_id == current_user.student_profile_id or current_user.role_id != 1:
         checklist_items = ChecklistItem.query.filter_by(
             assignee_id=student_profile_id)
@@ -1140,7 +1145,7 @@ def update_checklist_item(item_id):
                     if item.deadline is None and form.date.data is not None:
                         add_to_cal(item.assignee_id, form.item_text.data,
                                 form.date.data)
-            
+
             item.text = form.item_text.data
             item.deadline = form.date.data
             db.session.add(item)
@@ -1203,7 +1208,7 @@ def view_acceptance_profile(item_id, student_profile_id):
         student = StudentProfile.query.filter_by(id=student_profile_id).first()
         return render_template(
             'student/acceptance_profile.html',
-            acceptance=acceptance, 
+            acceptance=acceptance,
             college=college,
             student_profile=student)
     abort(404)
@@ -1234,12 +1239,12 @@ def add_student_scholarship(student_profile_id):
         student_profile_id=student_profile_id)
 
 @student.route(
-    '/profile/student_scholarship/edit/<int:item_id>', 
+    '/profile/student_scholarship/edit/<int:item_id>',
     methods=['GET','POST'])
 @login_required
 def edit_student_scholarship(item_id):
     schol = StudentScholarship.query.filter_by(id=item_id).first()
-    student = StudentProfile.query.filter_by(id=schol.student_profile_id).first()    
+    student = StudentProfile.query.filter_by(id=schol.student_profile_id).first()
     if schol:
         if schol.student_profile_id != current_user.student_profile_id and current_user.role_id == 1:
             abort(404)
@@ -1256,7 +1261,7 @@ def edit_student_scholarship(item_id):
             db.session.commit()
             url = get_redirect_url(schol.student_profile_id)
             return redirect(url)
-        student.scholarship_amount = student.scholarship_amount + schol.award_amount        
+        student.scholarship_amount = student.scholarship_amount + schol.award_amount
         return render_template(
             'student/edit_academic_info.html',
             form=form,
