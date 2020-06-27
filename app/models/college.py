@@ -538,7 +538,7 @@ class College(db.Model):
             'University of Chicago', 'Amherst College', 'Williams College',
             'Massachusetts Institute of Technology',
             'Georgia Institute of Technology',
-            'California Institute of Technology', 'Duke University'
+            'California Institute of Technology', 'Duke University', 'Pitzer College'
         }
         early_deadlines = [
             datetime(2017, 11, 4),
