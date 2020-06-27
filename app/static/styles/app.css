@@ -301,3 +301,10 @@ table.selectable tr:hover {
   background-size: cover;
 }
 
+/* Student College Page*/
+#search_div{
+  width: 100%;
+}
+#search_div:hover{
+  background-color: rgba(0,0,0,.05);;
+}
