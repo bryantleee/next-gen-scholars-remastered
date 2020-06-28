@@ -308,3 +308,8 @@ table.selectable tr:hover {
 #search_div:hover{
   background-color: rgba(0,0,0,.05);;
 }
+
+/* Dashboard */
+.dashboard_option:hover{
+  background-color: rgba(0,0,0,.05);;
+}
