@@ -18,10 +18,11 @@ from . import counselor
 from ..decorators import counselor_required
 from ..decorators import admin_required
 from ..email import send_email
-from ..models import (Role, User, College, StudentProfile, EditableHTML, 
+from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
                       ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
                       get_colors, Resource, validate_scattergram_csv)
+
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -74,7 +75,7 @@ def upload_scholarship_file():
                 header_row = False
                 continue
             if len(row) >= 11 and any(row):
-                # check that there are at least eleven columns  
+                # check that there are at least eleven columns
                 # and the row is not completely blank
                 scholarship_data = Scholarship(
                     name=row[0],
@@ -119,7 +120,7 @@ def upload_college_file():
             if header_row:
                 header_row = False
                 continue
-            if len(row) >= 8 and any(row):
+            if len(row) >= 9 and any(row):
                 # check that there are at least eight columns
                 # and the row is not completely blank
                 college = College.query.filter_by(name=row[0]).first()
@@ -128,33 +129,35 @@ def upload_college_file():
                     college = College(
                         name=row[0],
                         description=row[1],
+                        gpa_unweighted_average_overall=row[2],
                         regular_deadline=datetime.datetime.strptime(
-                            row[2], "%m/%d/%y") if row[2] else None,
-                        early_deadline=datetime.datetime.strptime(
                             row[3], "%m/%d/%y") if row[3] else None,
-                        fafsa_deadline=datetime.datetime.strptime(
+                        early_deadline=datetime.datetime.strptime(
                             row[4], "%m/%d/%y") if row[4] else None,
-                        acceptance_deadline=datetime.datetime.strptime(
+                        fafsa_deadline=datetime.datetime.strptime(
                             row[5], "%m/%d/%y") if row[5] else None,
-                        scholarship_deadline=datetime.datetime.strptime(
+                        acceptance_deadline=datetime.datetime.strptime(
                             row[6], "%m/%d/%y") if row[6] else None,
-                        image = row[7]
+                        scholarship_deadline=datetime.datetime.strptime(
+                            row[7], "%m/%d/%y") if row[7] else None,
+                        image = row[8]
                     )
                     College.retrieve_college_info(college)
-    
+
                 # else update the existing college
                 else:
                     college.description = row[1]
+                    college.gpa_unweighted_average_overall = row[2]
                     college.regular_deadline = datetime.datetime.strptime(
-                            row[2], "%m/%d/%y") if row[2] else None
-                    college.early_deadline = datetime.datetime.strptime(
                             row[3], "%m/%d/%y") if row[3] else None
-                    college.fafsa_deadline = datetime.datetime.strptime(
+                    college.early_deadline = datetime.datetime.strptime(
                             row[4], "%m/%d/%y") if row[4] else None
-                    college.acceptance_deadline = datetime.datetime.strptime(
+                    college.fafsa_deadline = datetime.datetime.strptime(
                             row[5], "%m/%d/%y") if row[5] else None
-                    college.scholarship_deadline = datetime.datetime.strptime(
+                    college.acceptance_deadline = datetime.datetime.strptime(
                             row[6], "%m/%d/%y") if row[6] else None
+                    college.scholarship_deadline = datetime.datetime.strptime(
+                            row[7], "%m/%d/%y") if row[7] else None
                     college.image = row[7]
                     College.retrieve_college_info(college)
                 db.session.add(college)
@@ -457,7 +460,7 @@ def default_checklist():
                         is_deletable=False,
                         deadline=form.date.data)
                     db.session.add(checklist_item)
-                    
+
         db.session.commit()
 
         users = User.query.filter_by(role_id=1)
@@ -546,7 +549,7 @@ def delete_test_name():
 @login_required
 @counselor_required
 def add_college():
-   
+
     # Allows a counselor to add a college profile.
     form = AddCollegeProfileForm()
     if form.validate_on_submit():
@@ -557,6 +560,7 @@ def add_college():
                 name=form.name.data,
                 scorecard_id=interpret_scorecard_input(form.college_scorecard_url.data),
                 description=form.description.data,
+                gpa_unweighted_average_overall=form.gpa_unweighted_average_overall.data,
                 early_deadline=form.early_deadline.data,
                 regular_deadline=form.regular_deadline.data,
                 scholarship_deadline=form.scholarship_deadline.data,
@@ -578,7 +582,7 @@ def add_college():
                 return render_template(
                     'counselor/add_college.html', form=form, header='Add College Profile')
             db.session.add(college)
-        
+
         else:
             flash('College could not be added - already exists in database.',
                   'error')
@@ -614,6 +618,7 @@ def edit_college_step2(college_id):
     form = EditCollegeProfileStep2Form(
         name=old_college.name,
         description=old_college.description,
+        gpa_unweighted_average_overall=old_college.gpa_unweighted_average_overall,
         college_scorecard_url=old_college.scorecard_id,
         regular_deadline=old_college.regular_deadline,
         early_deadline=old_college.early_deadline,
@@ -626,6 +631,7 @@ def edit_college_step2(college_id):
         college.name = form.name.data
         college.scorecard_id=interpret_scorecard_input(form.college_scorecard_url.data)
         college.description = form.description.data
+        college.gpa_unweighted_average_overall = form.gpa_unweighted_average_overall.data
         college.early_deadline = form.early_deadline.data
         college.regular_deadline = form.regular_deadline.data
         college.scholarship_deadline = form.scholarship_deadline.data
@@ -669,7 +675,7 @@ def delete_specific_college(college_id):
     college = College.query.filter_by(id=college_id).first()
     db.session.delete(college)
     db.session.commit()
-    return redirect(url_for('counselor.colleges')) 
+    return redirect(url_for('counselor.colleges'))
 
 
 @counselor.route('/alerts', methods=['GET', 'POST'])
@@ -824,7 +830,7 @@ def view_acceptance_profile(item_id):
         college = College.query.filter_by(name=acceptance.college).first()
         return render_template(
             'student/acceptance_profile.html',
-            acceptance=acceptance, 
+            acceptance=acceptance,
             college=college)
     abort(404)
 
@@ -955,7 +961,7 @@ def edit_resource(item_id):
         title=resource.title,
         description=resource.description,
         image_url=resource.image_url
-    )    
+    )
     if not resource:
         abort(404)
     if form.validate_on_submit():
@@ -968,7 +974,7 @@ def edit_resource(item_id):
         db.session.commit()
         flash('Resource successfully edited.', 'form-success')
         return redirect(url_for('counselor.resources'))
-    return render_template('counselor/edit_resource.html', form=form, 
+    return render_template('counselor/edit_resource.html', form=form,
         resource=resource, header='Edit Resource')
 
 @counselor.route('/add_resource', methods=['GET', 'POST'])

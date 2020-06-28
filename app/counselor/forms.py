@@ -157,8 +157,9 @@ class AddCollegeProfileForm(Form):
         'URL to the College Scorecard Profile or College Scorecard ID',
         validators=[Optional()])
     description = StringField(u'Description',
-        validators=[Optional()], 
+        validators=[Optional()],
         widget=TextArea())
+    gpa_unweighted_average_overall = FloatField(u'Unweighted GPA')
     early_deadline = DateField(
         'Early Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
@@ -205,7 +206,7 @@ class AddResourceForm(Form):
         validators=[InputRequired()]
     )
     description = StringField(
-        u'Resource Description', 
+        u'Resource Description',
         validators=[InputRequired()],
         widget=TextArea()
     )
@@ -226,7 +227,7 @@ class EditResourceForm(Form):
         validators=[InputRequired()]
     )
     description = StringField(
-        u'Resource Description', 
+        u'Resource Description',
         validators=[InputRequired()],
         widget=TextArea()
     )
@@ -241,15 +242,15 @@ class EditCollegeProfileStep2Form(Form):
     name = StringField(
         'College/University Name',
         validators=[InputRequired(), Length(1, 200)])
-   
     college_scorecard_url = StringField(
         'URL to the College Scorecard Profile or College Scorecard ID',
         validators=[Optional()])
     # Input not required for either deadline.
     description = StringField(
-        u'Description', 
+        u'Description',
         widget=TextArea(),
         validators=[Optional()])
+    gpa_unweighted_average_overall = FloatField(u'Unweighted GPA')
     early_deadline = DateField(
         'Early Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
