@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                
+
                 {% for c in colleges | sort(attribute='name') %}
                     <tr onclick="window.location.href = '{{ url_for('student.view_college_profile', college_id=c.id) }}';">
                         <td>{{ c.name }}</td>
@@ -41,8 +41,8 @@
                                 {% if c.regular_deadline is none %}
                                     No Data
                                 {% else %}
-                                    {{ c.regular_deadline.strftime('%m-%d-%Y') }}     
-                                {% endif %} 
+                                    {{ c.regular_deadline.strftime('%m-%d-%Y') }}
+                                {% endif %}
                             </td>
 
                             <td>
@@ -50,12 +50,14 @@
                                     No Data
                                 {% else %}
                                     {{ c.early_deadline.strftime('%m-%d-%Y') }}
-                                {% endif %} 
+                                {% endif %}
                             </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            <span style="color:red">Not every college is here, so if you think there's one missing,<br></span>
+            <span style="color:red">text 4157306340 the name of the college and it will be added!</span>
         </div>
     </div>
 </div>
