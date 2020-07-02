@@ -31,9 +31,12 @@ $(document).ready(function() {
         if(totalTime < highScore || highScore == null){
           highScore = totalTime;
           Cookies.set('highScore', highScore, { expires: 365 });
+          alert('New highscore! You took ' + totalTime + ' seconds to type in the Konami Code');
           activateConfetti();
         }
-        alert('You took ' + totalTime + ' seconds to type in the Konami Code.\nHighscore: ' + highScore);
+        else{
+          alert('You took ' + totalTime + ' seconds to type in the Konami Code.\nHighscore: ' + highScore);
+        }
         keysToPress = konamiCode.slice();
       }
     }
