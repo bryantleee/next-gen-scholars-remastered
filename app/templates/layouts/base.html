@@ -8,9 +8,9 @@
         {% block custom_head_tags %}{% endblock %}
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Serif" rel="stylesheet">
-        <script src= {{ url_for('static', filename='scripts/footer.js') }}></script>
-        <link href={{ url_for('static', filename='styles/app.css') }} rel="stylesheet">
-
+        <script src="{{ url_for('static', filename='scripts/footer.js') }}"></script>
+        <link href="{{ url_for('static', filename='styles/app.css') }}" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}"/>
     </head>
     <body>
         {% set dropdown = [] %}
@@ -21,7 +21,7 @@
                   [
                     ('account.manage', 'Your Account', 'settings'),
                     ('admin.index', 'Manage Users', 'user'),
-                    ('account.logout', 'Log out', 'sign out'),
+                    ('account.logout', 'Log Out', 'sign out'),
                   ]
                 ),
               ]
@@ -32,7 +32,7 @@
               ('Account',
                 [
                   ('account.manage', 'Your Account', 'settings'),
-                  ('account.logout', 'Log out', 'sign out'),
+                  ('account.logout', 'Log Out', 'sign out'),
                 ]
               ),
             ]
@@ -43,7 +43,7 @@
               ('Account',
                 [
                   ('account.manage', 'Your Account', 'settings'),
-                  ('account.logout', 'Log out', 'sign out'),
+                  ('account.logout', 'Log Out', 'sign out'),
                 ]
               ),
             ]
@@ -86,4 +86,6 @@
     }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="{{ url_for('static', filename='scripts/confetti.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/js.cookie.min.js') }}"></script>
 </html>

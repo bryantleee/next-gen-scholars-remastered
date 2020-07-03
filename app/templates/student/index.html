@@ -2,7 +2,7 @@
 
 {% macro dashboard_option(title, endpoint, description=None, icon=None) %}
     <a class="column" href="{{ url_for(endpoint) }}">
-        <div class="ui padded segment">
+        <div class="ui padded segment dashboard_option">
             <h3 class="ui header">
                 {% if icon is not none %}
                     <i style="color:#2AB088;" class="{{ icon }}"></i>
@@ -23,26 +23,7 @@
 {% block content %}
     <div class="ui stackable grid centered container" style="margin-top:12px; margin-bottom:64px">
         <div class="twelve wide column">
-            <div class="ui three steps">
-                <div class="step">
-                    <i class="user icon"></i>
-                    <div class="content">
-                        <div class="title">Complete Profile</div>
-                    </div>
-                </div>
-                <div class="step">
-                    <i class="calendar icon"></i>
-                    <div class="content">
-                        <div class="title">Sync Calendar</div>
-                    </div>
-                </div>
-                <div class="step">
-                    <i class="tasks icon"></i>
-                    <div class="content">
-                        <div class="title">Complete Tasks</div>
-                    </div>
-                </div>
-            </div>
+
             <h2 class="ui dividing header">Student Dashboard</h2>
             <h4 class="ui dividing header">Personal Tools</h4>
             <div class="ui two column stackable grid">

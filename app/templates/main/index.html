@@ -31,15 +31,12 @@
 
 {% block content %}
 <!-- <img src="https://cdn.shopify.com/s/files/1/1482/0322/files/Merchandise_Shop_for_Homepage_of_website_35543d35-61a6-4c64-a8d6-533ab4ad3904_2048x.jpg?v=1488502359" width="100%"> -->
-<div class="ui inverted vertical masthead center aligned segment" style="background-image: url('../static/images/ngs_test.JPG'); background-size:100%; background-color:#564359; padding-top:12%; padding-bottom:12%; margin-top:-30px;">
-    <div class="ui container">
-
-    </div>
-    <div class="ui text container" >
-        <h1 class="ui inverted header">
+<div class="ui inverted vertical masthead center aligned segment parallax_container" id="main_banner">
+    <div id="main_header_container" class="ui text container" >
+        <h1 class="ui inverted header" id="main_header">
             Next Generation Scholars Portal
         </h1>
-        <h2>The best way for students and counselors to communicate for the college application process</h2> <br />
+        <h2 id="main_header_2">The best way for students and counselors to communicate through the college application process</h2> <br />
         {% if not current_user.is_authenticated %}
             <a class="ui huge primary button" style="background-color:#FF4249" href="{{url_for('account.login')}}">
                 Get Started
