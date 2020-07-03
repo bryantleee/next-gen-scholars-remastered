@@ -40,18 +40,12 @@ def register():
             student_profile=StudentProfile())
         db.session.add(user)
         db.session.commit()
+
         token = user.generate_confirmation_token()
-        confirm_link = url_for('account.confirm', token=token, _external=True)
-        get_queue().enqueue(
-            send_email,
-            recipient=user.email,
-            subject='Confirm Your Account',
-            template='account/email/confirm',
-            user=user,
-            confirm_link=confirm_link)
-        flash('A confirmation link has been sent to {}.'.format(user.email),
-              'warning')
-        return redirect(url_for('main.index'))
+        user.confirm_account(token) # @KYLE Change this after deployment
+
+        flash('Your account has been confirmed! Log in to get started!', 'success')
+        return redirect(url_for('account.login'))
     return render_template('account/register.html', form=form)
 
 
@@ -76,6 +70,7 @@ def reset_password_request():
     """Respond to existing user's request to reset their password."""
     if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
+    '''
     form = RequestResetPasswordForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -94,6 +89,7 @@ def reset_password_request():
         flash('A password reset link has been sent to {}.'.format(
             form.email.data), 'warning')
         return redirect(url_for('account.login'))
+    '''
     return render_template('account/reset_password.html', form=form)
 
 
@@ -138,6 +134,14 @@ def change_password():
 @account.route('/manage/change-email', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
+    """Change existing user's email with provided token."""
+    if current_user.change_email(token):
+        flash('Your email address has been updated.', 'success')
+    else:
+        flash('The confirmation link is invalid or has expired.', 'error')
+    return redirect(url_for('main.index'))
+
+    '''
     """Respond to existing user's request to change their email."""
     form = ChangeEmailForm()
     if form.validate_on_submit():
@@ -161,6 +165,7 @@ def change_email_request():
         else:
             flash('Invalid email or password.', 'form-error')
     return render_template('account/manage.html', form=form)
+    '''
 
 
 @account.route('/manage/change-email/<token>', methods=['GET', 'POST'])
@@ -178,6 +183,7 @@ def change_email(token):
 @login_required
 def confirm_request():
     """Respond to new user's request to confirm their account."""
+    '''
     token = current_user.generate_confirmation_token()
     confirm_link = url_for('account.confirm', token=token, _external=True)
     get_queue().enqueue(
@@ -190,6 +196,9 @@ def confirm_request():
         confirm_link=confirm_link)
     flash('A new confirmation link has been sent to {}.'.format(
         current_user.email), 'warning')
+    return redirect(url_for('main.index'))
+    '''
+    flash('This should not show up')
     return redirect(url_for('main.index'))
 
 

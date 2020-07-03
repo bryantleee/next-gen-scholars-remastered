@@ -1,6 +1,6 @@
 from . import ScattergramData
 from .. import db
-    
+
 import os
 import random
 from datetime import datetime
@@ -35,12 +35,12 @@ class College(db.Model):
     admission_rate = db.Column(db.Float, index=True)
     early_deadline = db.Column(db.Date, index=True)
     fafsa_deadline = db.Column(db.Date, index=True)
-    scholarship_deadline = db.Column(db.Date, index=True)    
+    scholarship_deadline = db.Column(db.Date, index=True)
     acceptance_deadline = db.Column(db.Date, index=True)
     plot_SAT2400 = db.Column(db.String)
     plot_SAT1600 = db.Column(db.String)
     plot_ACT = db.Column(db.String)
-    
+
     median_debt_income_0_30000 = db.Column(db.Integer, index=True)
     median_debt_income_30001_75000 = db.Column(db.Integer, index=True)
     median_debt_income_75001_plus = db.Column(db.Integer, index=True)
@@ -65,6 +65,7 @@ class College(db.Model):
     cost_of_attendance_in_state = db.Column(db.Float, index=True)
     cost_of_attendance_out_of_state = db.Column(db.Float, index=True)
     room_and_board = db.Column(db.Float, index=True)
+    gpa_unweighted_average_overall = db.Column(db.Float, index=True)
     sat_score_average_overall = db.Column(db.Float, index=True)
     act_score_average_overall = db.Column(db.Float, index=True)
     first_generation_percentage = db.Column(db.Float, index=True)
@@ -367,20 +368,20 @@ class College(db.Model):
         else:
             name = 'school.name=' + college.name
             nameNewFormat = name.replace(' ', '%20')
-            
+
         try:
             data = None
             year='latest'
             urlStr = '' .join(['https://api.data.gov/ed/collegescorecard/v1/schools.json?',
-                nameNewFormat, 
-                '&_fields=school.name,id,school.city,school.state,school.school_url,school.price_calculator_url,', 
+                nameNewFormat,
+                '&_fields=school.name,id,school.city,school.state,school.school_url,school.price_calculator_url,',
                 'school.minority_serving.hispanic,school.ownership_peps,',
                 year, '.admissions.admission_rate.overall,',
-                year, '.student.size,', 
+                year, '.student.size,',
                 year, '.cost.attendance.academic_year,',
-                year, '.cost.tuition.in_state,', 
-                year, '.cost.tuition.out_of_state,', 
-                
+                year, '.cost.tuition.in_state,',
+                year, '.cost.tuition.out_of_state,',
+
                 #aid/debt
                 year, '.aid.median_debt.income.0_30000,',
                 year, '.aid.median_debt.income.30001_75000,',
@@ -400,15 +401,15 @@ class College(db.Model):
                 year, '.cost.net_price.private.by_income_level.75001-110000,',
                 year, '.cost.net_price.private.by_income_level.110001-plus,',
 
-                year, '.admissions.act_scores.midpoint.cumulative,', 
-                year, '.student.share_firstgeneration,', 
-                year, '.admissions.sat_scores.average.overall,', 
+                year, '.admissions.act_scores.midpoint.cumulative,',
+                year, '.student.share_firstgeneration,',
+                year, '.admissions.sat_scores.average.overall,',
                 year, '.student.demographics.race_ethnicity.white,',
-                year, '.student.demographics.race_ethnicity.black,', 
+                year, '.student.demographics.race_ethnicity.black,',
                 year, '.student.demographics.race_ethnicity.hispanic,',
-                year, '.student.demographics.race_ethnicity.asian,', 
+                year, '.student.demographics.race_ethnicity.asian,',
                 year, '.student.demographics.race_ethnicity.aian,',
-                year, '.student.demographics.race_ethnicity.nhpi,', 
+                year, '.student.demographics.race_ethnicity.nhpi,',
                 year, '.student.demographics.race_ethnicity.non_resident_alien',
                 '&api_key=jjHzFLWEyba3YYtWiv7jaQN8kGSkMuf55A9sRsxl'])
 
@@ -417,7 +418,7 @@ class College(db.Model):
             data = r.json()
         except HTTPError:
             print('error')
-            
+
         else:
             college.year_data_collected = year
 
@@ -451,7 +452,7 @@ class College(db.Model):
                         firstFoundIdx = idx
                         result = r
             y = college.year_data_collected
-            
+
             if result[y + '.admissions.admission_rate.overall'] is not None:
                 college.admission_rate = round(result[y + '.admissions.admission_rate.overall']*100,2)
             if result['school.school_url'] is not None:
@@ -473,7 +474,7 @@ class College(db.Model):
                 college.median_debt_first_gen = result[y+'.aid.median_debt.first_generation_students']
             if result[y+'.aid.median_debt.non_first_generation_students'] is not None:
                 college.median_debt_non_first_gen = result[y+'.aid.median_debt.non_first_generation_students']
-            
+
             if result[y + '.student.size'] is not None:
                 college.school_size = result[y + '.student.size']
             if result['school.city'] is not None:
@@ -512,7 +513,7 @@ class College(db.Model):
                 college.race_native_hawaiian = round(result[y + '.student.demographics.race_ethnicity.nhpi']*100,2)
             if result[y + '.student.demographics.race_ethnicity.non_resident_alien'] is not None:
                 college.race_international = round(result[y + '.student.demographics.race_ethnicity.non_resident_alien']*100,2)
-            
+
 
             #will only show in-state net price if instiution is public and in CA
             inst_type_to_get = college.institution_type if college.school_state == 'CA' and result['school.ownership_peps'] == 1\
@@ -542,7 +543,7 @@ class College(db.Model):
                     college.school_color3 = school_colors[2]
                 if len(school_colors) > 3:
                     college.school_color4 = school_colors[3]
-                    
+
             return True
 
 
