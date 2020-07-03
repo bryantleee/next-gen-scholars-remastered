@@ -11,6 +11,9 @@
         <script src= {{ url_for('static', filename='scripts/footer.js') }}></script>
         <link href={{ url_for('static', filename='styles/app.css') }} rel="stylesheet">
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+
     </head>
     <body>
         {% set dropdown = [] %}
@@ -79,7 +82,7 @@
             </div>
         </div>
     </body>
-    
+
     <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');

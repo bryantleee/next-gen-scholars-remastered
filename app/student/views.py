@@ -1171,10 +1171,14 @@ def view_college_profile(college_id):
     state_full_name = get_state_name_from_abbreviation(college.school_state)
     website_url = fix_url(college.school_url)
     net_cost_url = fix_url(college.price_calculator_url)
+
+    scatter_data = ScattergramData.query.filter_by(college=college.name).all()
+
     return render_template(
         'main/college_profile.html', website_url=website_url,
         net_cost_url=net_cost_url, pageType='college_profile',
-        college=college, state_full_name=state_full_name)
+        college=college, state_full_name=state_full_name,
+        scatter_data=scatter_data)
 
 @student.route('/scholarship_profile/<int:scholarship_id>')
 @login_required
