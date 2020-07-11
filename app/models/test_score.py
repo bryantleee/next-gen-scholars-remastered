@@ -17,7 +17,7 @@ class TestScore(db.Model):
         test_types = [
             {
                 'name': 'SAT',
-                'max_score': 2400
+                'max_score': 1600
             },
             {
                 'name': 'ACT',
@@ -52,7 +52,7 @@ class TestScore(db.Model):
                 'max_score': 800
             },
         ]
-        years = ['2017', '2016', '2015', '2014']
+        years = ['2020', '2019', '2018', '2017']
         test_scores = []
         for _ in range(count):
             fake = Faker()

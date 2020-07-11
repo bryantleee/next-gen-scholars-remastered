@@ -98,7 +98,7 @@ class StudentProfile(db.Model):
             majors=random.sample(Major.query.all(), 3),
             colleges=random.sample(College.query.all(), 3),
             fafsa_status=fafsa_status,
-            common_app_essay='https://google.com',
+            common_app_essay='https://duckduckgo.com',
             common_app_essay_status=essay_status,
             early_deadline=bool(random.getrandbits(1)),
             essays=Essay.generate_fake(),

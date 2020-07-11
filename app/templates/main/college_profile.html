@@ -194,9 +194,7 @@
                         <div class="column">
                             {{ create_medium_stat_box(college.first_generation_percentage|string+'%', 'Percentage of First-Generation Students')}}
                         </div>
-                        {% endif %}
-
-                       
+                        {% endif %}                       
                     </div>
                     {% endif %}
 
@@ -218,7 +216,7 @@
                 </div>
         </div>
 
-        <div class="ui raised secondary green segment">
+        <div class="ui raised secondary green segment college_info"> 
             <h1 class="ui header college_info_section_header">Deadlines</h1>
             <p><strong>Early</strong>: {{ college.early_deadline }}</p>
             <p><strong>Regular</strong>: {{ college.regular_deadline }}</p>
@@ -226,7 +224,6 @@
             <p><strong>FAFSA Deadline</strong>: {{ college.fafsa_deadline }}</p>
             <p><strong>Acceptance Deadline</strong>: {{ college.acceptance_deadline }}</p>
         </div>
-
 
         {% if college.plot_SAT1600 %}
         <h4 class="ui header">GPA vs. SAT [1600] Scattergram</h4>
