@@ -890,7 +890,7 @@ def edit_scholarship_step1():
         return redirect(
             url_for('counselor.edit_scholarship_step2', scholarship_id=schol.id))
     return render_template(
-        'counselor/edit_college.html',
+        'counselor/edit_scholarship.html',
         form=form,
         header='Edit Scholarship Profile')
 
@@ -931,7 +931,7 @@ def edit_scholarship_step2(scholarship_id):
         flash('Scholarship profile successfully edited.', 'form-success')
         return redirect(url_for('counselor.scholarships'))
     return render_template(
-        'counselor/edit_college.html',
+        'counselor/edit_scholarship.html',
         form=form,
         header='Edit Scholarship Profile')
 
@@ -948,7 +948,7 @@ def delete_scholarship():
         flash('Scholarship profile successfully deleted.', 'form-success')
         return redirect(url_for('counselor.index'))
     return render_template(
-        'counselor/delete_college.html',
+        'counselor/delete_scholarship.html',
         form=form,
         header='Delete Scholarship Profile')
 

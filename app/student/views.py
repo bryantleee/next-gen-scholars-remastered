@@ -1164,6 +1164,7 @@ def update_checklist_item(item_id):
 @student.route('/college_profile/<int:college_id>')
 @login_required
 def view_college_profile(college_id):
+
     college = College.query.filter_by(id=college_id).first()
     if college.description == '':
         return render_template('/errors/invalid_college_profile.html')
@@ -1174,11 +1175,26 @@ def view_college_profile(college_id):
 
     scatter_data = ScattergramData.query.filter_by(college=college.name).all()
 
+    user_gpa = 0
+    user_sat = 0
+    user_act = 0
+
+    if current_user.student_profile:
+
+        user_gpa = max(user_gpa, current_user.student_profile.unweighted_gpa)
+
+        for test in current_user.student_profile.test_scores:
+            if test.name == 'SAT':
+                user_sat = max(user_sat, test.score)
+            if test.name == 'ACT':
+                user_act = max(user_act, test.score)
+
     return render_template(
         'main/college_profile.html', website_url=website_url,
         net_cost_url=net_cost_url, pageType='college_profile',
         college=college, state_full_name=state_full_name,
-        scatter_data=scatter_data)
+        scatter_data=scatter_data, user_gpa=user_gpa,
+        user_sat=user_sat, user_act=user_act)
 
 @student.route('/scholarship_profile/<int:scholarship_id>')
 @login_required
