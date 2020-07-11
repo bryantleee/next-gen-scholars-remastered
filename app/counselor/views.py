@@ -20,8 +20,9 @@ from ..decorators import admin_required
 from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
-                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input,
-                      get_colors, Resource)
+                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
+                      get_colors, Resource, validate_scattergram_csv)
+
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -31,10 +32,7 @@ import datetime
 import csv
 import io
 import logging
-
 import pandas as pd
-from difflib import get_close_matches
-from math import isnan
 
 # TODO: remove before production?
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -750,59 +748,42 @@ def edit_alert(alert_id):
         return redirect(url_for('counselor.edit_alert', alert_id=alert.id))
     return render_template('counselor/alerts/edit_alert.html', form=form)
 
-
+## HEREEEEE
 @csrf.exempt
 @counselor.route('/upload_scattergram', methods=['GET', 'POST'])
 @login_required
 @counselor_required
 def upload_scattergram():
     if request.method == 'POST':
-        try:
-            f = request.files['file']
-            contents = f.read()
-            # split here
-            lines = contents.split('\r'.encode('utf-8'))
-            college_names = set()
-            for line in lines[1:]:
-                line = line.split(','.encode('utf-8'))
-                college_names.add(str(line[1], 'utf-8').strip())
-                csvName = str(line[0], 'utf-8').strip()
-                csvCollege=str(line[1], 'utf-8').strip()
-                csvStatus=str(line[2], 'utf-8').strip()
-                if line[3]:
-                    csvGPA=str(line[3], 'utf-8').strip()
-                else:
-                    csvGPA=None
-                if line[4]:
-                    csvSAT2400=str(line[4], 'utf-8').strip()
-                else:
-                    csvSAT2400=None
-                if line[5]:
-                    csvSAT1600=str(line[5], 'utf-8').strip()
-                else:
-                    csvSAT1600=None
-                if line[6]:
-                    csvACT=str(line[6], 'utf-8').strip()
-                else:
-                    csvACT=None
+        valid_colleges = [college.name for college in College.query.all()]
+        valid_students = ['{} {}'.format(user.first_name, user.last_name) for user in User.query.all()]
+        
+        #read from file
+        f = request.files['file']
+        stream = io.StringIO(f.stream.read().decode("utf-8"))
+        success, df = validate_scattergram_csv.validate_scattergram_csv(stream, valid_students, valid_colleges)
+
+        if not success:
+            message, message_type = df, 'negative'
+        else:
+            message, message_type = 'Upload successful!', 'positive'
+            for row in df.iterrows():
                 point = ScattergramData(
-                    name=csvName,
-                    college=csvCollege,
-                    status=csvStatus,
-                    GPA=csvGPA,
-                    SAT2400=csvSAT2400,
-                    SAT1600=csvSAT1600,
-                    ACT=csvACT
+                    name=row[1]['student name'],
+                    college=row[1]['college'],
+                    status=row[1]['application status'],
+                    GPA=row[1]['gpa'],
+                    SAT2400=row[1]['sat2400'],
+                    SAT1600=row[1]['sat1600'],
+                    ACT=row[1]['act']
                 )
                 db.session.add(point)
             db.session.commit()
-            for name in list(college_names):
-                college = College.query.filter_by(name=name).first()
-                if college:
-                    college.update_plots()
-            message, message_type = 'Upload successful!', 'positive'
-        except:
-            message, message_type = 'Error with upload. Please make sure the format of the CSV file matches the description.', 'negative'
+        # for name in list(college_names):
+        #     college = College.query.filter_by(name=name).first()
+        #     if college:
+        #         college.update_plots()
+       
         return render_template('counselor/upload_scattergram.html', message=message, message_type=message_type)
     return render_template('counselor/upload_scattergram.html', message=None, message_type=None)
 

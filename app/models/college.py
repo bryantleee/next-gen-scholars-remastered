@@ -560,10 +560,7 @@ class College(db.Model):
             'University of Chicago', 'Amherst College', 'Williams College',
             'Massachusetts Institute of Technology',
             'Georgia Institute of Technology',
-            'California Institute of Technology', 'Duke University',
-            'University of Redlands', 'University of California-San Diego',
-            'University of California-Santa Cruz', 'Emory University',
-            'American University', 'San Francisco State University'
+            'California Institute of Technology', 'Duke University', 'Pitzer College'
         }
         early_deadlines = [
             datetime(2020, 11, 4),
