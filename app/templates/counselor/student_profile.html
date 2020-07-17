@@ -32,7 +32,7 @@
         <div class="item">
           <i class="marker icon"></i>
           <div class="content">
-            &nbsp; {{ user.student_profile.district }}, {{ user.student_profile.city }}, {{ user.student_profile.state }}
+            &nbsp; {{ user.student_profile.city }}, {{ user.student_profile.state }}
           </div>
         </div>
       </div>
@@ -284,7 +284,7 @@
           <tr>
             <th colspan="3">
               <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_supplemental_essay', student_profile_id=user.student_profile.id) }}">
-                <i class="plus icon"></i> Add Supplemental Essay
+                <i class="plus icon"></i> Add Essay
               </a> {% if user.student_profile.common_app_essay|length == 0 %}
               <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_common_app_essay', student_profile_id=user.student_profile.id) }}">
                 <i class="plus icon"></i> Add Common App Essay
@@ -365,7 +365,7 @@
           <th></th>
         </thead>
         <tbody class="full-width">
-          {% if user.student_profile.acceptances|length > 0 %} {% for acceptance in 
+          {% if user.student_profile.acceptances|length > 0 %} {% for acceptance in
             user.student_profile.acceptances|sort(attribute='college') %}
             <tr>
               {% if acceptance.net_cost >= 0 %}
@@ -428,7 +428,7 @@
           <th></th>
         </thead>
         <tbody class="full-width">
-          {% if user.student_profile.scholarships|length > 0 %} {% for scholarship in 
+          {% if user.student_profile.scholarships|length > 0 %} {% for scholarship in
             user.student_profile.scholarships|sort(attribute='name') %}
             <tr>
               <td>{{ scholarship.name }}</td>
@@ -576,7 +576,7 @@
       });
     });
 
-    // Delete Acceptance 
+    // Delete Acceptance
     $('.delete-acceptance-button').click(function() {
       var url = '/student/profile/acceptance/delete/' + $(this).data('id');
       $(this).parent().parent().parent().remove();

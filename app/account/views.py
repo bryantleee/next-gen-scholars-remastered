@@ -37,12 +37,10 @@ def register():
             last_name=form.last_name.data,
             email=form.email.data,
             password=form.password.data,
-            student_profile=StudentProfile())
+            student_profile=StudentProfile(),
+            confirmed=True)
         db.session.add(user)
         db.session.commit()
-
-        token = user.generate_confirmation_token()
-        user.confirm_account(token) # @KYLE Change this after deployment
 
         flash('Your account has been confirmed! Log in to get started!', 'success')
         return redirect(url_for('account.login'))
@@ -131,18 +129,20 @@ def change_password():
     return render_template('account/manage.html', form=form)
 
 
-@account.route('/manage/change-email', methods=['GET', 'POST'])
+@account.route('/manage/change-email/changing', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
     """Change existing user's email with provided token."""
-    if current_user.change_email(token):
+    '''
+    if current_user.change_email():
         flash('Your email address has been updated.', 'success')
     else:
         flash('The confirmation link is invalid or has expired.', 'error')
     return redirect(url_for('main.index'))
-
     '''
+
     """Respond to existing user's request to change their email."""
+    '''
     form = ChangeEmailForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.password.data):
@@ -166,17 +166,37 @@ def change_email_request():
             flash('Invalid email or password.', 'form-error')
     return render_template('account/manage.html', form=form)
     '''
-
-
-@account.route('/manage/change-email/<token>', methods=['GET', 'POST'])
-@login_required
-def change_email(token):
     """Change existing user's email with provided token."""
-    if current_user.change_email(token):
-        flash('Your email address has been updated.', 'success')
-    else:
-        flash('The confirmation link is invalid or has expired.', 'error')
-    return redirect(url_for('main.index'))
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            new_email = form.email.data
+            if current_user.change_email(new_email):
+                flash('Your email address has been updated.', 'success')
+            else:
+                flash('Could not change email. Maybe it has already been taken?', 'error')
+            return redirect(url_for('main.index'))
+        flash('Wrong password', 'error')
+        return render_template('account/manage.html', form=form)
+    return render_template('account/manage.html', form=form)
+
+
+@account.route('/manage/change-email', methods=['GET', 'POST'])
+@login_required
+def change_email():
+    """Change existing user's email with provided token."""
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            new_email = form.email.data
+            if current_user.change_email(new_email):
+                flash('Your email address has been updated.', 'success')
+            else:
+                flash('There was an error', 'error')
+            return redirect(url_for('main.index'))
+        flash('Wrong password', 'error')
+        return render_template('account/manage.html', form=form)
+    return render_template('account/manage.html', form=form)
 
 
 @account.route('/confirm-account')

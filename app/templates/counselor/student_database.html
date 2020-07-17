@@ -95,9 +95,8 @@
                             <th>Grade</th>
                             <th>High School &emsp;</th>
                             <th>FAFSA</th>
-                            <th>Essays Uploaded</th>
-                            <th>Common App Essay</th>
-                            <th>Supplemental Essays</th>
+                            <th>Common App</th>
+                            <th>Supplementals</th>
                             <th style="display:none">Colleges</th>
                             <th class="no-sort">Student Profile</th>
                         </tr>
@@ -112,13 +111,6 @@
                             <td class="searchable-td">{{ s.high_school }}</td>
                             <td style="text-align:center" class='td-fafsa' data-fafsa={{ s.fafsa_status }}>
                                 {% if s.fafsa_status == 'Incomplete' %}
-                                <i class="red x icon"></i></td>
-                                {% else %}
-                                <i class="green check icon"></i>
-                                {% endif %}
-                            </td>
-                            <td style="text-align:center" class='td-essays-uploaded' data-uploaded={{ s.essays|length == 0 and s.common_app_essay == '' }}>
-                                {% if s.essays|length == 0 and s.common_app_essay == '' %}
                                 <i class="red x icon"></i></td>
                                 {% else %}
                                 <i class="green check icon"></i>

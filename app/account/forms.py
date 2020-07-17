@@ -108,8 +108,20 @@ class ChangeEmailForm(Form):
                                  Length(1, 64),
                                  Email()])
     password = PasswordField('Password', validators=[InputRequired()])
+    submit_button = SubmitField('Update email')
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered.')
+    '''
+    email = EmailField(
+        'New email', validators=[InputRequired(),
+                                 Length(1, 64),
+                                 Email()])
+    password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Update email')
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
+    '''

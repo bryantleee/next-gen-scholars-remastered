@@ -38,7 +38,7 @@
         <div class="item">
           <i class="marker icon"></i>
           <div class="content">
-            &nbsp; {{ user.student_profile.district }}, {{ user.student_profile.city }}, {{ user.student_profile.state }}
+            &nbsp; {{ user.student_profile.city }}, {{ user.student_profile.state }}
           </div>
         </div>
       </div>
@@ -368,7 +368,7 @@
       <div style="color: #2AB088;" class="ui horizontal divider">
         <h3>Acceptances</h3>
       </div>
-      <div style="color: #2AB088;" class="ui horizontal divider">Colleges</div>      
+      <div style="color: #2AB088;" class="ui horizontal divider">Colleges</div>
       <table class="ui compact table">
         <thead class="full-width">
           <th>Cost of Attendance</th>
@@ -377,7 +377,7 @@
           <th></th>
         </thead>
         <tbody class="full-width">
-          {% if user.student_profile.acceptances|length > 0 %} {% for acceptance in 
+          {% if user.student_profile.acceptances|length > 0 %} {% for acceptance in
             user.student_profile.acceptances|sort(attribute='college') %}
             <tr>
               {% if acceptance.net_cost >= 0 %}
@@ -438,7 +438,7 @@
             <th></th>
           </thead>
           <tbody class="full-width">
-            {% if user.student_profile.scholarships|length > 0 %} {% for scholarship in 
+            {% if user.student_profile.scholarships|length > 0 %} {% for scholarship in
               user.student_profile.scholarships|sort(attribute='name') %}
               <tr>
                 <td>{{ scholarship.name }}</td>
@@ -586,7 +586,7 @@
       });
     });
 
-    // Delete Acceptance 
+    // Delete Acceptance
     $('.delete-acceptance-button').click(function() {
       var url = '/student/profile/acceptance/delete/' + $(this).data('id');
       $(this).parent().parent().parent().remove();

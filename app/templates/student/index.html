@@ -23,45 +23,25 @@
 {% block content %}
     <div class="ui stackable grid centered container" style="margin-top:12px; margin-bottom:64px">
         <div class="twelve wide column">
-            <div class="ui three steps">
-                <div class="step">
-                    <i class="user icon"></i>
-                    <div class="content">
-                        <div class="title">Complete Profile</div>
-                    </div>
-                </div>
-                <div class="step">
-                    <i class="calendar icon"></i>
-                    <div class="content">
-                        <div class="title">Sync Calendar</div>
-                    </div>
-                </div>
-                <div class="step">
-                    <i class="tasks icon"></i>
-                    <div class="content">
-                        <div class="title">Complete Tasks</div>
-                    </div>
-                </div>
-            </div>
             <h2 class="ui dividing header">Student Dashboard</h2>
             <h4 class="ui dividing header">Personal Tools</h4>
             <div class="ui two column stackable grid">
                 {{ dashboard_option('View Tasks', 'student.tasks',
                                     description='View your list of upcoming and completed tasks', icon='tasks icon') }}
-                
+
                 {{ dashboard_option('View Calendar', 'student.calendar',
                                     description='View your personal and NGS calendar for upcoming events', icon='calendar icon') }}
-            
+
                 {{ dashboard_option('Account Settings', 'account.manage',
                                     description='Manage your account settings and change your login information', icon='settings icon') }}
-            
+
                 {{ dashboard_option('View Profile', 'student.view_user_profile',
-                                    description='View and manage your student profile', icon='user icon') }}            
+                                    description='View and manage your student profile', icon='user icon') }}
             </div>
             <!-- <h4 class="ui dividing header">Manage Profile</h4>
             <div class="ui two column stackable grid">
 
-                
+
                 {{ dashboard_option('Add Test Score', 'student.tasks',
                                     description='Add a test score to your student profile', icon='user icon') }}
 

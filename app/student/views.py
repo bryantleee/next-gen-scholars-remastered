@@ -254,27 +254,22 @@ def edit_profile(student_profile_id):
             high_school=student_profile.high_school,
             phone_number=student_profile.phone_number,
             graduation_year=student_profile.graduation_year,
-            district=student_profile.district,
             city=student_profile.city,
             state=student_profile.state,
             fafsa_status=student_profile.fafsa_status,
             unweighted_gpa=student_profile.unweighted_gpa,
-            weighted_gpa=student_profile.weighted_gpa,
-            early_deadline=bool_to_string(student_profile.early_deadline))
+            weighted_gpa=student_profile.weighted_gpa)
         if form.validate_on_submit():
             # Update user profile information.
             student_profile.grade = form.grade.data
             student_profile.high_school = form.high_school.data
             student_profile.phone_number = form.phone_number.data
             student_profile.graduation_year = form.graduation_year.data
-            student_profile.district = form.district.data
             student_profile.city = form.city.data
             student_profile.state = form.state.data
             student_profile.fafsa_status = form.fafsa_status.data
             student_profile.unweighted_gpa = form.unweighted_gpa.data
             student_profile.weighted_gpa = form.weighted_gpa.data
-            student_profile.early_deadline = string_to_bool(
-                form.early_deadline.data)
             db.session.add(student_profile)
             db.session.commit()
             url = get_redirect_url(student_profile.id)

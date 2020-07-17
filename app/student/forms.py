@@ -24,8 +24,8 @@ class EditCommonAppEssayForm(Form):
         'Status',
         choices=[('Incomplete', 'Incomplete'), ('Waiting', 'Waiting'),
                  ('Reviewed', 'Reviewed'), ('Edited', 'Edited'), ('Done',
-                                                                  'Done')], 
-        #default=('Waiting', 'Waiting'),                                                     
+                                                                  'Done')],
+        #default=('Waiting', 'Waiting'),
         validators=[InputRequired()])
     submit = SubmitField('Update essay link')
 
@@ -113,12 +113,12 @@ class AddTestScoreForm(Form):
 
     # must override validate method in order to cross-check scores across different fields
     def validate(self):
-        
+
         # first run the normal non-overriden validate method
         if not Form.validate(self):
             return False
-        
-        # see if there's existing score in database with same test type, month, and year 
+
+        # see if there's existing score in database with same test type, month, and year
         test_name = self.data.get('test_name').name
         test_month = self.data.get('month')
         test_year = self.data.get('year')
@@ -127,7 +127,7 @@ class AddTestScoreForm(Form):
         if test is not None:
             self.test_name.errors.append('Please enter a different date for this test or edit the existing score.')
             return False
-        
+
         # TODO: Read me from a database or something... let admin be able to edit valid test score ranges
         valid_ranges = \
             {'ACT' : (0,36) ,
@@ -142,22 +142,22 @@ class AddTestScoreForm(Form):
             'SAT Subject Test - Chemistry' : (0, 800),
             'SAT Subject Test - Physics' : (0, 800)
             }
-        
+
         valid_range = valid_ranges.get(test_name, -1)
 
-        # checking to see if the test name shows up in database; 
+        # checking to see if the test name shows up in database;
         # this error should not happen under normal circumstances
         if valid_range == -1:
-            self.test_name.errors.append('Not a valid test.') 
+            self.test_name.errors.append('Not a valid test.')
             return False
 
         # check to see if range is valid
         if not (self.data.get('score') >= valid_range[0] and self.data.get('score') <= valid_range[1]):
             self.score.errors.append("The " + test_name + '\'s score must be between ' + str(valid_range[0]) +' and ' + \
-                    str(valid_range[1])) 
+                    str(valid_range[1]))
 
             # TODO: check to see if score is valid score in increments of x (i.e. SAT score must be in increments of 10)
-            return False 
+            return False
 
         return True
 
@@ -228,24 +228,19 @@ class EditStudentProfile(Form):
         'High School', validators=[InputRequired(),
                                    Length(1, 100)])
     phone_number = StringField(
-        'Phone number', validators=[InputRequired()])
+        'Cell Phone Number', validators=[Optional()])
     graduation_year = IntegerField(
-        'Graduation Year', validators=[InputRequired()])
+        'High School Graduation Year', validators=[InputRequired()])
     unweighted_gpa = FloatField('Unweighted GPA', validators=[InputRequired()])
     weighted_gpa = FloatField('Weighted GPA', validators=[Optional()])
     fafsa_status = SelectField(
         'FAFSA Status',
         choices=[('Incomplete', 'Incomplete'), ('Submitted', 'Submitted'),
                  ('In Progress', 'In Progress')])
-    early_deadline = SelectField(
-        'Have Early Deadline', choices=[('True', 'Yes'), ('False', 'No')])
-    district = StringField(
-        'District', validators=[InputRequired(),
-                                Length(1, 100)])
     city = StringField('City', validators=[InputRequired(), Length(1, 100)])
     state = StringField('State', validators=[InputRequired(), Length(1, 100)])
     submit = SubmitField('Update Profile')
-    
+
     def strip_all(self):
         raise ValidationError(self.data)
 
@@ -297,7 +292,7 @@ class EditAcceptanceForm(Form):
         'Status',
         choices=[('Accepted', 'Accepted'),
                  ('Accepted with award letter',
-                  'Accepted with award letter'), ('Pending Award Letter Parsing', 
+                  'Accepted with award letter'), ('Pending Award Letter Parsing',
                   'Pending Award Letter Parsing')],
         validators=[InputRequired()])
     submit = SubmitField('Update Acceptance')
@@ -308,11 +303,11 @@ class AddStudentScholarshipForm(Form):
     award_amount = FloatField('Award Amount', validators=[InputRequired()])
     submit = SubmitField('Add Scholarship Award')
 
-    
+
     def validate_award_amount(form, field):
         award_amount = str(field.data)
 
-        # regex makes sure that vals either have no decimal, a decimal and a tenths places, a decimal 
+        # regex makes sure that vals either have no decimal, a decimal and a tenths places, a decimal
         # and a hundreths place
         if re.match('^\d+(\.\d(\d)?)?$', award_amount) is None:
             raise ValidationError('Monetary amount must be in the format: xx, xx.xx or xx.xx')

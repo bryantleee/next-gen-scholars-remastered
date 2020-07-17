@@ -307,6 +307,13 @@
                         },
 
                         {
+                            label: 'RD - Waitlisted',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#C644FF',
+                            pointStyle: 'circle'
+                        },
+
+                        {
                             label: 'RD - Waitlisted - Accepted',
                             pointRadius: 7,
                             pointHoverRadius: 12,
@@ -354,6 +361,13 @@
                         },
 
                         {
+                            label: 'ED - Waitlisted',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#C644FF',
+                            pointStyle: 'rect'
+                        },
+
+                        {
                             label: 'ED - Waitlisted - Accepted',
                             pointRadius: 7,
                             pointHoverRadius: 12,
@@ -396,23 +410,54 @@
                         },
 
                         {
-                            label: 'Your GPA/SAT',
+                            label: 'Your GPA/SAT guide lines',
                             pointRadius: 2500,
                             hoverRadius: 2500,
-                            borderWidth: 10,
-                            hoverBorderWidth: 10,
-                            hitRadius: -2500 + 30,
+                            borderWidth: 5,
+                            hoverBorderWidth: 5,
+                            hitRadius: -2500,
                             pointStyle: 'cross',
                             backgroundColor: '#000000',
                             data: [{x: user_x,
                                     y: user_y}]
-                        }
+                        },
+
+                        {
+                            label: 'Your GPA/SAT',
+                            pointRadius: 10,
+                            hoverRadius: 10,
+                            borderWidth: 5,
+                            hoverBorderWidth: 10,
+                            hitRadius: 10,
+                            pointStyle: 'star',
+                            borderColor: 'brown',
+                            backgroundColor: 'brown',
+                            data: [{x: user_x,
+                                    y: user_y}]
+                        },
 
                         ]
                     },
                     options: {
                         legend: {
-                            display: false
+                            display: true,
+                            labels: {
+                                filter: function(legendItem, data) {
+                                    console.log(legendItem);
+                                    console.log(data);
+                                    console.log(legendItem.text)
+                                    console.log(legendItem.text in ['Your GPA/SAT'])
+                                    if (['Your GPA/SAT', 'RD - Accepted',
+                                        'RD - Waitlisted', 'RD - Denied',
+                                        'ED - Accepted', 'ED - Waitlisted',
+                                        'ED - Denied']
+                                        .includes(legendItem.text)) {
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                }
+                            }
                         },
                         scales: {
                             xAxes: [{
@@ -431,6 +476,8 @@
                     }
                 });
             }
+
+            Chart.defaults.global.legend.labels.usePointStyle = true;
 
             let chartElem0 = document.getElementById('chart0').getContext('2d');
             let chartElem1 = document.getElementById('chart1').getContext('2d');
