@@ -9,17 +9,27 @@ from .. import db
 from ..models import Role, User
 
 
-class ChangeUserEmailForm(Form):
-    email = EmailField(
-        'New email', validators=[InputRequired(),
-                                 Length(1, 64),
-                                 Email()])
-    submit = SubmitField('Update email')
+# class ChangeUserEmailForm(Form):
+#     email = EmailField(
+#         'New email', validators=[InputRequired(),
+#                                  Length(1, 64),
+#                                  Email()])
+#     submit = SubmitField('Update email')
 
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('Email already registered.')
+#     def validate_email(self, field):
+#         if User.query.filter_by(email=field.data).first():
+#             raise ValidationError('Email already registered.')
 
+class ChangeUserPasswordForm(Form):
+    new_password = PasswordField(
+        'New password',
+        validators=[
+            InputRequired(),
+            EqualTo('new_password2', 'Passwords must match.')
+        ])
+    new_password2 = PasswordField(
+        'Confirm new password', validators=[InputRequired()])
+    submit = SubmitField('Update password')
 
 class ChangeAccountTypeForm(Form):
     role = QuerySelectField(
