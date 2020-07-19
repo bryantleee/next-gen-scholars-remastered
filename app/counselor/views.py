@@ -21,7 +21,7 @@ from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
                       ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
-                      get_colors, Resource, validate_scattergram_csv)
+                      get_colors, Resource, validate_csvs)
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -111,59 +111,106 @@ def colleges():
 @counselor_required
 def upload_college_file():
     if request.method == 'POST':
+        #read from file
         f = request.files['file']
-
-        stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
-        csv_input = csv.reader(stream)
-        header_row = True
-        for row in csv_input:
-            if header_row:
-                header_row = False
-                continue
-            if len(row) >= 9 and any(row):
-                # check that there are at least eight columns
-                # and the row is not completely blank
-                college = College.query.filter_by(name=row[0]).first()
-                # College didn't already exist in database, so add it.
+        stream = io.StringIO(f.stream.read().decode("utf-8"))
+        success, df = validate_csvs.validate_college_csv(stream)
+        
+        if not success:
+            message, message_type = df, 'negative'
+        else:
+            message, message_type = 'Upload successful!', 'positive'
+            for row in df.iterrows():
+                college_name = row[1]['College']
+                college = College.query.filter_by(name=college_name).first()
                 if college is None:
+                # College didn't already exist in database, so add it.
                     college = College(
-                        name=row[0],
-                        description=row[1],
-                        gpa_unweighted_average_overall=row[2],
-                        regular_deadline=datetime.datetime.strptime(
-                            row[3], "%m/%d/%y") if row[3] else None,
-                        early_deadline=datetime.datetime.strptime(
-                            row[4], "%m/%d/%y") if row[4] else None,
-                        fafsa_deadline=datetime.datetime.strptime(
-                            row[5], "%m/%d/%y") if row[5] else None,
-                        acceptance_deadline=datetime.datetime.strptime(
-                            row[6], "%m/%d/%y") if row[6] else None,
-                        scholarship_deadline=datetime.datetime.strptime(
-                            row[7], "%m/%d/%y") if row[7] else None,
-                        image = row[8]
+                        name=college_name,
+                        scorecard_id = '',
+                        description=row[1]['Description'],
+                        gpa_unweighted_average_overall=row[1]['Unweighted GPA'],
+                        regular_deadline=row[1]['Regular Deadline (RD)'].to_pydatetime() if not pd.isnull(row[1]['Regular Deadline (RD)']) else None,
+                        early_deadline=row[1]['Early Deadline (ED)'].to_pydatetime() if not pd.isnull(row[1]['Early Deadline (ED)']) else None,
+                        scholarship_deadline=row[1]['Scholarship Deadline'].to_pydatetime() if not pd.isnull(row[1]['Scholarship Deadline']) else None,
+                        fafsa_deadline=row[1]['FAFSA Deadline'].to_pydatetime() if not pd.isnull(row[1]['FAFSA Deadline']) else None,
+                        acceptance_deadline=row[1]['Acceptance Announcement Date'],
+                        school_url = "",
+                        school_size = 0,
+                        school_city = "",
+                        tuition_in_state = 0,
+                        tuition_out_of_state = 0,
+                        cost_of_attendance_in_state = 0,
+                        cost_of_attendance_out_of_state = 0,
+                        room_and_board = 0,
+                        sat_score_average_overall = 0,
+                        act_score_average_overall = 0
                     )
-                    College.retrieve_college_info(college)
-
-                # else update the existing college
                 else:
-                    college.description = row[1]
-                    college.gpa_unweighted_average_overall = row[2]
-                    college.regular_deadline = datetime.datetime.strptime(
-                            row[3], "%m/%d/%y") if row[3] else None
-                    college.early_deadline = datetime.datetime.strptime(
-                            row[4], "%m/%d/%y") if row[4] else None
-                    college.fafsa_deadline = datetime.datetime.strptime(
-                            row[5], "%m/%d/%y") if row[5] else None
-                    college.acceptance_deadline = datetime.datetime.strptime(
-                            row[6], "%m/%d/%y") if row[6] else None
-                    college.scholarship_deadline = datetime.datetime.strptime(
-                            row[7], "%m/%d/%y") if row[7] else None
-                    college.image = row[7]
-                    College.retrieve_college_info(college)
+                    college.description=row[1]['Description']
+                    college.gpa_unweighted_average_overall=row[1]['Unweighted GPA']
+                    college.regular_deadline=row[1]['Regular Deadline (RD)'].to_pydatetime() if not pd.isnull(row[1]['Regular Deadline (RD)']) else None
+                    college.early_deadline=row[1]['Early Deadline (ED)'].to_pydatetime() if not pd.isnull(row[1]['Early Deadline (ED)']) else None
+                    college.scholarship_deadline=row[1]['Scholarship Deadline'].to_pydatetime() if not pd.isnull(row[1]['Scholarship Deadline']) else None
+                    college.fafsa_deadline=row[1]['FAFSA Deadline'].to_pydatetime() if not pd.isnull(row[1]['FAFSA Deadline']) else None
+                    college.acceptance_deadline=row[1]['Acceptance Announcement Date']
+                College.retrieve_college_info(college)
                 db.session.add(college)
-        db.session.commit()
-        return redirect(url_for('counselor.colleges'))
+            db.session.commit()
+        return render_template('counselor/upload_colleges.html')
     return render_template('counselor/upload_colleges.html')
+
+    #     return render_template('counselor/upload_scattergram.html', message=message, message_type=message_type)
+    # return render_template('counselor/upload_scattergram.html', message=None, message_type=None)
+
+    #     header_row = True
+    #     for row in csv_input:
+    #         if header_row:
+    #             header_row = False
+    #             continue
+    #         if len(row) >= 9 and any(row):
+    #             # check that there are at least eight columns
+    #             # and the row is not completely blank
+    #             college = College.query.filter_by(name=row[0]).first()
+    #             # College didn't already exist in database, so add it.
+    #             if college is None:
+    #                 college = College(
+    #                     name=row[0],
+    #                     description=row[1],
+    #                     gpa_unweighted_average_overall=row[2],
+    #                     regular_deadline=datetime.datetime.strptime(
+    #                         row[3], "%m/%d/%y") if row[3] else None,
+    #                     early_deadline=datetime.datetime.strptime(
+    #                         row[4], "%m/%d/%y") if row[4] else None,
+    #                     fafsa_deadline=datetime.datetime.strptime(
+    #                         row[5], "%m/%d/%y") if row[5] else None,
+    #                     acceptance_deadline=datetime.datetime.strptime(
+    #                         row[6], "%m/%d/%y") if row[6] else None,
+    #                     scholarship_deadline=datetime.datetime.strptime(
+    #                         row[7], "%m/%d/%y") if row[7] else None,
+    #                     image = row[8]
+    #                 )
+
+    #             # else update the existing college
+    #             else:
+    #                 college.description = row[1]
+    #                 college.gpa_unweighted_average_overall = row[2]
+    #                 college.regular_deadline = datetime.datetime.strptime(
+    #                         row[3], "%m/%d/%y") if row[3] else None
+    #                 college.early_deadline = datetime.datetime.strptime(
+    #                         row[4], "%m/%d/%y") if row[4] else None
+    #                 college.fafsa_deadline = datetime.datetime.strptime(
+    #                         row[5], "%m/%d/%y") if row[5] else None
+    #                 college.acceptance_deadline = datetime.datetime.strptime(
+    #                         row[6], "%m/%d/%y") if row[6] else None
+    #                 college.scholarship_deadline = datetime.datetime.strptime(
+    #                         row[7], "%m/%d/%y") if row[7] else None
+    #                 college.image = row[7]
+    #                 College.retrieve_college_info(college)
+    #             db.session.add(college)
+    #     db.session.commit()
+    #     return redirect(url_for('counselor.colleges'))
+    # return render_template('counselor/upload_colleges.html')
 
 
 @counselor.route('/new-user', methods=['GET', 'POST'])
@@ -537,7 +584,6 @@ def delete_test_name():
 @login_required
 @counselor_required
 def add_college():
-
     # Allows a counselor to add a college profile.
     form = AddCollegeProfileForm()
     if form.validate_on_submit():
@@ -746,7 +792,7 @@ def upload_scattergram():
         #read from file
         f = request.files['file']
         stream = io.StringIO(f.stream.read().decode("utf-8"))
-        success, df = validate_scattergram_csv.validate_scattergram_csv(stream, valid_students, valid_colleges)
+        success, df = validate_csvs.validate_scattergram_csv(stream, valid_students, valid_colleges)
 
         if not success:
             message, message_type = df, 'negative'
