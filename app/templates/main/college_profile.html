@@ -1,6 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
+
 <div class="container" style="padding-bottom:50px; text-align: center; background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('{{ college.image }}'); background-size: cover;">
     <h1 style="font-size:4.5em; color:white; text-align:center; padding-top:100px; padding-bottom:30px; font-family: 'IBM Plex Serif', serif;">{{ college.name }}</h1>
 </div>
@@ -15,7 +16,7 @@
 
 {% macro create_link_box(url, description, extra_classes=none, icon_class=none)%}
     <div class="column">
-        <div class="ui segment college_link {{extra_classes}}" onclick="window.open('{{ url }}', '_blank')"> 
+        <div class="ui segment college_link {{extra_classes}}" onclick="window.open('{{ url }}', '_blank')">
             <div class="college_link_icon_padding link_icon">
                 <i class="{{icon_class}} icon link_icon"></i>
             </div>
@@ -49,7 +50,7 @@
                 {{ create_link_box(net_cost_url, 'Net Cost Calculator', 'uni_cost', 'dollar sign') }}
                 {{ create_link_box('https://collegescorecard.ed.gov/school/?'+college.scorecard_id|string, 'College Scorecard Profile', 'uni_scd', 'chart bar') }}
             </div>
-        
+
         </div>
 
         <div class="ui raised secondary green segment college_info">
@@ -58,7 +59,7 @@
 
             <div class="ui three column doubling stackable grid container stretched flex_wrapper">
                 <div class="column">
-                    <div class="ui segment" style="text-align: center;"> 
+                    <div class="ui segment" style="text-align: center;">
                         <h2 class="big_stat_title"> {{ college.admission_rate }}% </h1>
                         <h3 class="big_stat_subtitle"> Acceptance Rate </h2>
                         {% if college.admission_rate is not none and college.admission_rate < 30.0 %}
@@ -70,7 +71,7 @@
                 {% if college.sat_score_average_overall != 0.0 or college.act_score_average_overall != 0.0 %}
                 <div class="column">
                     {% if college.sat_score_average_overall != 0.0 %}
-                        {{create_medium_stat_box("{0:,.0f}".format(college.sat_score_average_overall|round|int), 'Average SAT Score')}}
+                        {{create_medium_stat_box("{0:.0f}".format(college.sat_score_average_overall|round|int), 'Average SAT Score')}}
                     {% endif %}
                     {% if college.act_score_average_overall != 0.0 %}
                         {{create_medium_stat_box(college.act_score_average_overall|round|int , 'Average ACT Score')}}
@@ -84,50 +85,50 @@
                         <h2 style="font-size: 20px;margin:0px;">{{ college.school_city }}, {{ state_full_name }}</h2>
                         <h3 class="medium_stat_subtitle"> Location </h3>
                     </div>
-                    {% endif %}  
+                    {% endif %}
                     {% if college.school_city != "" %}
                         {{create_medium_stat_box("{0:,.0f}".format(college.school_size), 'Undergraduate Size')}}
-                    {% endif %}  
+                    {% endif %}
                 </div>
             </div>
-            
+
 
             {% if college.is_hispanic_serving == 1%}
-            <p><strong>This school is a hispanic-serving institution.</strong>: 
+            <p><strong>This school is a hispanic-serving institution.</strong>:
             {% endif %}
         </div>
 
 
-        <div class="ui raised secondary green segment college_info"> 
+        <div class="ui raised secondary green segment college_info">
             <h1 class="ui header college_info_section_header">Costs</h1>
-            
+
             <div class="ui two column doubling stackable grid container flex_wrapper">
                 <div class="column">
 
-                    {% if college.tuition_in_state == college.tuition_out_of_state %} 
+                    {% if college.tuition_in_state == college.tuition_out_of_state %}
                     {{create_medium_stat_box('$'+"{0:,.0f}".format(college.cost_of_attendance_in_state), 'Average Total Cost of Attendance')}}
                     {% else %}
                     {{create_medium_stat_box('$'+"{0:,.0f}".format(college.cost_of_attendance_in_state), 'Average Total In-State Cost of Attendance')}}
                     {{create_medium_stat_box('$'+"{0:,.0f}".format(college.cost_of_attendance_out_of_state), 'Average Total Out-of-State Cost of Attendance')}}
-                    {% endif %} 
+                    {% endif %}
 
-                
+
                      <div class="ui two column doubling stackable grid container stretched flex_wrapper">
                         <div class="column">
                             {% if college.room_and_board != 0.0 %}
-                            {{create_medium_stat_box('$'+"{0:,.0f}".format(college.room_and_board), 'Room and Board')}}   
-                            {% endif %} 
+                            {{create_medium_stat_box('$'+"{0:,.0f}".format(college.room_and_board), 'Room and Board')}}
+                            {% endif %}
                         </div>
                         <div class="column">
                             {% if college.room_and_board != 0.0 %}
-                            {{create_medium_stat_box('$'+"{0:,.0f}".format(college.tuition_in_state), 'Tuition')}}   
-                            {% endif %} 
+                            {{create_medium_stat_box('$'+"{0:,.0f}".format(college.tuition_in_state), 'Tuition')}}
+                            {% endif %}
                         </div>
 
                     </div>
                 </div>
 
-                {% if college.net_price_0_30000 is not none or 
+                {% if college.net_price_0_30000 is not none or
                     college.net_price_30001_48000 is not none or
                     college.net_price_48001_75000 is not none or
                     college.net_price_75001_110000 is not none or
@@ -150,7 +151,7 @@
             </div>
         </div>
 
-        {% if college.median_debt_first_gen is not none or college.median_debt_first_gen is not none or 
+        {% if college.median_debt_first_gen is not none or college.median_debt_first_gen is not none or
             college.median_debt_income_0_30000 is not none or college.median_debt_income_30001_75000 is not none
             or college.median_debt_income_75001_plus is not none %}
         <div class="ui raised secondary green segment college_info">
@@ -194,7 +195,9 @@
                         <div class="column">
                             {{ create_medium_stat_box(college.first_generation_percentage|string+'%', 'Percentage of First-Generation Students')}}
                         </div>
+
                         {% endif %}                       
+
                     </div>
                     {% endif %}
 
@@ -225,18 +228,267 @@
             <p><strong>Acceptance Deadline</strong>: {{ college.acceptance_deadline }}</p>
         </div>
 
-        {% if college.plot_SAT1600 %}
-        <h4 class="ui header">GPA vs. SAT [1600] Scattergram</h4>
-        <iframe width="900" height="480" frameborder="0" seamless="seamless" scrolling="no" src="{{college.plot_SAT1600}}.embed?showlink=false"></iframe>
-        {% endif %}
-        {% if college.plot_ACT %}
-        <h4 class="ui header">GPA vs. ACT Scattergram</h4>
-        <iframe width="900" height="480" frameborder="0" seamless="seamless" scrolling="no" src="{{college.plot_ACT}}.embed?showlink=false"></iframe>
-        {% endif %}
-        {% if college.plot_SAT2400 %}
-        <h4 class="ui header">GPA vs. SAT [2400] Scattergram</h4>
-        <iframe width="900" height="480" frameborder="0" seamless="seamless" scrolling="no" src="{{college.plot_SAT2400}}.embed?showlink=false"></iframe>
-        {% endif %}
+        <div class="container">
+            <canvas height="250px" id="chart0"></canvas>
+        </div>
+
+        <div class="container">
+            <canvas height="250px" id="chart1"></canvas>
+        </div>
+
+        <div class="container">
+            <canvas height="250px" id="chart2"></canvas>
+        </div>
+
+        <script>
+
+            let chart_data0 = {"RA": [],    // Regular accepted
+                               "RWA": [],   // Regular waitlisted accepted
+                               "RWW": [],   // Regular waitlisted waitlisted
+                               "RWD": [],   // Regular waitlisted denied
+                               "RD": [],    // Regular denied
+                               "EA": [],    // Early accepted
+                               "EWA": [],   // early waitlisted accepted
+                               "EWW": [],   // Early waitlisted waitlisted
+                               "EWD": [],   // Early waitlisted denied
+                               "ED": []}    // Early denied
+
+           let chart_data1 = {"RA": [],    // Regular accepted
+                              "RWA": [],   // Regular waitlisted accepted
+                              "RWW": [],   // Regular waitlisted waitlisted
+                              "RWD": [],   // Regular waitlisted denied
+                              "RD": [],    // Regular denied
+                              "EA": [],    // Early accepted
+                              "EWA": [],   // early waitlisted accepted
+                              "EWW": [],   // Early waitlisted waitlisted
+                              "EWD": [],   // Early waitlisted denied
+                              "ED": []}    // Early denied
+
+          let chart_data2 = {"RA": [],    // Regular accepted
+                             "RWA": [],   // Regular waitlisted accepted
+                             "RWW": [],   // Regular waitlisted waitlisted
+                             "RWD": [],   // Regular waitlisted denied
+                             "RD": [],    // Regular denied
+                             "EA": [],    // Early accepted
+                             "EWA": [],   // early waitlisted accepted
+                             "EWW": [],   // Early waitlisted waitlisted
+                             "EWD": [],   // Early waitlisted denied
+                             "ED": []}    // Early denied
+
+            {% for d in scatter_data %}
+                if ("{{d.status}}" in chart_data0) {
+                    if ("{{d.GPA == None or d.SAT1600 == None}}" == "False") {
+                        chart_data0["{{d.status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.SAT1600 }}"})
+                    }
+                }
+                if ("{{d.status}}" in chart_data1) {
+                    if ("{{d.GPA == None or d.SAT2400 == None}}" == "False") {
+                        chart_data1["{{d.status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.SAT2400 }}"})
+                    }
+                }
+                if ("{{d.status}}" in chart_data2) {
+                    if ("{{d.GPA == None or d.ACT == None}}" == "False") {
+                        chart_data2["{{d.status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.ACT }}"})
+                    }
+                }
+            {% endfor %}
+
+            newSC = function(chart_elem, chart_data, x_max, y_max, user_x, user_y) {
+                return new Chart(chart_elem, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                        {
+                            label: 'RD - Accepted',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            backgroundColor: '#68FF33',
+                            data: chart_data["RA"]
+                        },
+
+                        {
+                            label: 'RD - Waitlisted',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#C644FF',
+                            pointStyle: 'circle'
+                        },
+
+                        {
+                            label: 'RD - Waitlisted - Accepted',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            borderWidth: 3,
+                            borderColor: '#C644FF',
+                            backgroundColor: '#68FF33',
+                            data: chart_data["RWA"]
+                        },
+
+                        {
+                            label: 'RD - Waitlisted - Waitlisted',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            borderWidth: 3,
+                            borderColor: '#C644FF',
+                            backgroundColor: '#C644FF',
+                            data: chart_data["RWW"]
+                        },
+
+                        {
+                            label: 'RD - Waitlisted - Denied',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            borderWidth: 3,
+                            borderColor: '#C644FF',
+                            backgroundColor: '#FF4444',
+                            data: chart_data["RWD"]
+                        },
+
+                        {
+                            label: 'RD - Denied',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            backgroundColor: '#FF4444',
+                            data: chart_data["RD"]
+                        },
+
+                        {
+                            label: 'ED - Accepted',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            pointStyle: 'rect',
+                            backgroundColor: '#68FF33',
+                            data: chart_data["EA"]
+                        },
+
+                        {
+                            label: 'ED - Waitlisted',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#C644FF',
+                            pointStyle: 'rect'
+                        },
+
+                        {
+                            label: 'ED - Waitlisted - Accepted',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            borderWidth: 3,
+                            pointStyle: 'rect',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#68FF33',
+                            data: chart_data["EWA"]
+                        },
+
+                        {
+                            label: 'ED - Waitlisted - Waitlisted',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            borderWidth: 3,
+                            pointStyle: 'rect',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#C644FF',
+                            data: chart_data["EWW"]
+                        },
+
+                        {
+                            label: 'ED - Waitlisted - Denied',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            borderWidth: 3,
+                            pointStyle: 'rect',
+                            borderColor: '#C644FF',
+                            backgroundColor: '#FF4444',
+                            data: chart_data["EWD"]
+                        },
+
+                        {
+                            label: 'ED - Denied',
+                            pointRadius: 7,
+                            pointHoverRadius: 12,
+                            pointStyle: 'rect',
+                            backgroundColor: '#FF4444',
+                            data: chart_data["ED"]
+                        },
+
+                        {
+                            label: 'Your GPA/SAT guide lines',
+                            pointRadius: 2500,
+                            hoverRadius: 2500,
+                            borderWidth: 5,
+                            hoverBorderWidth: 5,
+                            hitRadius: -2500,
+                            pointStyle: 'cross',
+                            backgroundColor: '#000000',
+                            data: [{x: user_x,
+                                    y: user_y}]
+                        },
+
+                        {
+                            label: 'Your GPA/SAT',
+                            pointRadius: 10,
+                            hoverRadius: 10,
+                            borderWidth: 5,
+                            hoverBorderWidth: 10,
+                            hitRadius: 10,
+                            pointStyle: 'star',
+                            borderColor: 'brown',
+                            backgroundColor: 'brown',
+                            data: [{x: user_x,
+                                    y: user_y}]
+                        },
+
+                        ]
+                    },
+                    options: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                filter: function(legendItem, data) {
+                                    console.log(legendItem);
+                                    console.log(data);
+                                    console.log(legendItem.text)
+                                    console.log(legendItem.text in ['Your GPA/SAT'])
+                                    if (['Your GPA/SAT', 'RD - Accepted',
+                                        'RD - Waitlisted', 'RD - Denied',
+                                        'ED - Accepted', 'ED - Waitlisted',
+                                        'ED - Denied']
+                                        .includes(legendItem.text)) {
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: x_max
+                                },
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: y_max
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+
+            Chart.defaults.global.legend.labels.usePointStyle = true;
+
+            let chartElem0 = document.getElementById('chart0').getContext('2d');
+            let chartElem1 = document.getElementById('chart1').getContext('2d');
+            let chartElem2 = document.getElementById('chart2').getContext('2d');
+
+            var chart0 = newSC(chartElem0, chart_data0, 4, 1600, {{ user_gpa }}, {{ user_sat }})
+            var chart1 = newSC(chartElem1, chart_data1, 4, 2400, {{ user_gpa }}, {{ user_sat }})
+            var chart2 = newSC(chartElem2, chart_data2, 4, 36, {{ user_gpa }}, {{ user_act }})
+
+        </script>
+
     </div>
 </div>
 

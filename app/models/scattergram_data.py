@@ -6,7 +6,7 @@ from .. import db
 
 class ScattergramData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, index=True)
+    name = db.Column(db.String, index=True, nullable=True)
     college = db.Column(db.String, index=True)
     status = db.Column(db.String, index=True)
     GPA = db.Column(db.Float, index=True)

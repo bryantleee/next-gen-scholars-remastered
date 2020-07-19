@@ -178,7 +178,8 @@ def new_user():
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             email=form.email.data,
-            password=form.password.data)
+            password=form.password.data,
+            confirmed=True)
         if user.role.id == 1:
             user.student_profile=StudentProfile()
         db.session.add(user)
@@ -198,26 +199,13 @@ def invite_user():
             role=form.role.data,
             first_name=form.first_name.data,
             last_name=form.last_name.data,
-            email=form.email.data)
+            email=form.email.data,
+            confirmed=True)
         if user.role.id == 1:
             user.student_profile=StudentProfile()
         db.session.add(user)
         db.session.commit()
-        token = user.generate_confirmation_token()
-        invite_link = url_for(
-            'account.join_from_invite',
-            user_id=user.id,
-            token=token,
-            _external=True)
-        get_queue().enqueue(
-            send_email,
-            recipient=user.email,
-            subject='You Are Invited To Join',
-            template='account/email/invite',
-            user=user,
-            invite_link=fix_url(invite_link),
-        )
-        flash('User {} successfully invited'.format(user.full_name()),
+        flash('User {} successfully created'.format(user.full_name()),
               'form-success')
     return render_template('counselor/new_user.html', form=form)
 
@@ -558,7 +546,7 @@ def add_college():
             # College didn't already exist in database, so add it.
             college = College(
                 name=form.name.data,
-                scorecard_id=interpret_scorecard_input(form.college_scorecard_url.data),
+                scorecard_id=interpret_scorecard_input(""),
                 description=form.description.data,
                 gpa_unweighted_average_overall=form.gpa_unweighted_average_overall.data,
                 early_deadline=form.early_deadline.data,
@@ -566,7 +554,7 @@ def add_college():
                 scholarship_deadline=form.scholarship_deadline.data,
                 fafsa_deadline=form.fafsa_deadline.data,
                 acceptance_deadline=form.acceptance_deadline.data,
-                image = form.image.data,school_url = "",
+                school_url = "",
                 school_size = 0,
                 school_city = "",
                 tuition_in_state = 0,
@@ -619,17 +607,15 @@ def edit_college_step2(college_id):
         name=old_college.name,
         description=old_college.description,
         gpa_unweighted_average_overall=old_college.gpa_unweighted_average_overall,
-        college_scorecard_url=old_college.scorecard_id,
         regular_deadline=old_college.regular_deadline,
         early_deadline=old_college.early_deadline,
         scholarship_deadline=old_college.scholarship_deadline,
         fafsa_deadline=old_college.fafsa_deadline,
-        acceptance_deadline=old_college.acceptance_deadline,
-        image = old_college.image)
+        acceptance_deadline=old_college.acceptance_deadline)
     if form.validate_on_submit():
         college = old_college
         college.name = form.name.data
-        college.scorecard_id=interpret_scorecard_input(form.college_scorecard_url.data)
+        college.scorecard_id=interpret_scorecard_input("")
         college.description = form.description.data
         college.gpa_unweighted_average_overall = form.gpa_unweighted_average_overall.data
         college.early_deadline = form.early_deadline.data
@@ -637,7 +623,6 @@ def edit_college_step2(college_id):
         college.scholarship_deadline = form.scholarship_deadline.data
         college.fafsa_deadline = form.fafsa_deadline.data
         college.acceptance_deadline = form.acceptance_deadline.data
-        college.image = form.image.data
         College.retrieve_college_info(college)
         db.session.add(college)
         db.session.commit()
@@ -877,7 +862,7 @@ def edit_scholarship_step1():
         return redirect(
             url_for('counselor.edit_scholarship_step2', scholarship_id=schol.id))
     return render_template(
-        'counselor/edit_college.html',
+        'counselor/edit_scholarship.html',
         form=form,
         header='Edit Scholarship Profile')
 
@@ -918,7 +903,7 @@ def edit_scholarship_step2(scholarship_id):
         flash('Scholarship profile successfully edited.', 'form-success')
         return redirect(url_for('counselor.scholarships'))
     return render_template(
-        'counselor/edit_college.html',
+        'counselor/edit_scholarship.html',
         form=form,
         header='Edit Scholarship Profile')
 
@@ -935,7 +920,7 @@ def delete_scholarship():
         flash('Scholarship profile successfully deleted.', 'form-success')
         return redirect(url_for('counselor.index'))
     return render_template(
-        'counselor/delete_college.html',
+        'counselor/delete_scholarship.html',
         form=form,
         header='Delete Scholarship Profile')
 

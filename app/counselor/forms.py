@@ -153,13 +153,12 @@ class AddCollegeProfileForm(Form):
     name = StringField(
         'College/University Name',
         validators=[InputRequired(), Length(1, 200)])
-    college_scorecard_url = StringField(
-        'URL to the College Scorecard Profile or College Scorecard ID',
-        validators=[Optional()])
     description = StringField(u'Description',
         validators=[Optional()],
         widget=TextArea())
-    gpa_unweighted_average_overall = FloatField(u'Unweighted GPA')
+    gpa_unweighted_average_overall = FloatField(
+        u'Unweighted GPA',
+        validators=[Optional()])
     early_deadline = DateField(
         'Early Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
@@ -180,10 +179,6 @@ class AddCollegeProfileForm(Form):
         'Acceptance Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
         validators=[Optional()])
-    image = StringField(
-        'URL for image of college',
-        validators=[Optional()]
-    )
     submit = SubmitField('Add College Profile')
 
 
@@ -242,15 +237,14 @@ class EditCollegeProfileStep2Form(Form):
     name = StringField(
         'College/University Name',
         validators=[InputRequired(), Length(1, 200)])
-    college_scorecard_url = StringField(
-        'URL to the College Scorecard Profile or College Scorecard ID',
-        validators=[Optional()])
     # Input not required for either deadline.
     description = StringField(
         u'Description',
         widget=TextArea(),
         validators=[Optional()])
-    gpa_unweighted_average_overall = FloatField(u'Unweighted GPA')
+    gpa_unweighted_average_overall = FloatField(
+        u'Unweighted GPA',
+        validators=[Optional()])
     early_deadline = DateField(
         'Early Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
@@ -270,9 +264,6 @@ class EditCollegeProfileStep2Form(Form):
     acceptance_deadline = DateField(
         'Acceptance Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
-        validators=[Optional()])
-    image = StringField(
-        'URL to image of college',
         validators=[Optional()])
     submit = SubmitField('Save College Profile')
 
