@@ -20,7 +20,7 @@ from ..decorators import admin_required
 from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
-                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
+                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input,
                       get_colors, Resource, validate_scattergram_csv)
 
 import google.oauth2.credentials
@@ -740,9 +740,12 @@ def edit_alert(alert_id):
 @counselor_required
 def upload_scattergram():
     if request.method == 'POST':
-        valid_colleges = [college.name for college in College.query.all()]
-        valid_students = ['{} {}'.format(user.first_name, user.last_name) for user in User.query.all()]
-        
+        #valid_colleges = [college.name for college in College.query.all()]
+        #valid_students = ['{} {}'.format(user.first_name, user.last_name) for user in User.query.all()]
+
+        valid_colleges = None
+        valid_students = None
+
         #read from file
         f = request.files['file']
         stream = io.StringIO(f.stream.read().decode("utf-8"))
@@ -756,11 +759,13 @@ def upload_scattergram():
                 point = ScattergramData(
                     name=row[1]['student name'],
                     college=row[1]['college'],
-                    status=row[1]['application status'],
+                    ed_status=row[1]['ed_status'],
                     GPA=row[1]['gpa'],
                     SAT2400=row[1]['sat2400'],
                     SAT1600=row[1]['sat1600'],
-                    ACT=row[1]['act']
+                    ACT=row[1]['act'],
+                    fin_aid_perc=row[1]['fin aid'],
+                    high_school=row[1]['high school']
                 )
                 db.session.add(point)
             db.session.commit()
@@ -768,7 +773,7 @@ def upload_scattergram():
         #     college = College.query.filter_by(name=name).first()
         #     if college:
         #         college.update_plots()
-       
+
         return render_template('counselor/upload_scattergram.html', message=message, message_type=message_type)
     return render_template('counselor/upload_scattergram.html', message=None, message_type=None)
 

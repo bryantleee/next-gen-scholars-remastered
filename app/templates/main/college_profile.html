@@ -196,7 +196,7 @@
                             {{ create_medium_stat_box(college.first_generation_percentage|string+'%', 'Percentage of First-Generation Students')}}
                         </div>
 
-                        {% endif %}                       
+                        {% endif %}
 
                     </div>
                     {% endif %}
@@ -219,7 +219,7 @@
                 </div>
         </div>
 
-        <div class="ui raised secondary green segment college_info"> 
+        <div class="ui raised secondary green segment college_info">
             <h1 class="ui header college_info_section_header">Deadlines</h1>
             <p><strong>Early</strong>: {{ college.early_deadline }}</p>
             <p><strong>Regular</strong>: {{ college.regular_deadline }}</p>
@@ -242,171 +242,74 @@
 
         <script>
 
-            let chart_data0 = {"RA": [],    // Regular accepted
-                               "RWA": [],   // Regular waitlisted accepted
-                               "RWW": [],   // Regular waitlisted waitlisted
-                               "RWD": [],   // Regular waitlisted denied
-                               "RD": [],    // Regular denied
-                               "EA": [],    // Early accepted
-                               "EWA": [],   // early waitlisted accepted
-                               "EWW": [],   // Early waitlisted waitlisted
-                               "EWD": [],   // Early waitlisted denied
-                               "ED": []}    // Early denied
+            let chart_data0 = {"Rd": [],    // Regular accepted
+                               "Ed": []}    // Early accepted
 
-           let chart_data1 = {"RA": [],    // Regular accepted
-                              "RWA": [],   // Regular waitlisted accepted
-                              "RWW": [],   // Regular waitlisted waitlisted
-                              "RWD": [],   // Regular waitlisted denied
-                              "RD": [],    // Regular denied
-                              "EA": [],    // Early accepted
-                              "EWA": [],   // early waitlisted accepted
-                              "EWW": [],   // Early waitlisted waitlisted
-                              "EWD": [],   // Early waitlisted denied
-                              "ED": []}    // Early denied
+           let chart_data1 = {"Rd": [],     // Regular accepted
+                              "Ed": []}     // Early accepted
 
-          let chart_data2 = {"RA": [],    // Regular accepted
-                             "RWA": [],   // Regular waitlisted accepted
-                             "RWW": [],   // Regular waitlisted waitlisted
-                             "RWD": [],   // Regular waitlisted denied
-                             "RD": [],    // Regular denied
-                             "EA": [],    // Early accepted
-                             "EWA": [],   // early waitlisted accepted
-                             "EWW": [],   // Early waitlisted waitlisted
-                             "EWD": [],   // Early waitlisted denied
-                             "ED": []}    // Early denied
+          let chart_data2 = {"Rd": [],      // Regular accepted
+                             "Ed": []}      // Early accepted
+
+
+          let ed_sizes = []
+          let rd_sizes = []
+          let datapoint_added;
 
             {% for d in scatter_data %}
-                if ("{{d.status}}" in chart_data0) {
+
+                datapoint_added = false;
+
+                if ("{{d.ed_status}}" in chart_data0) {
                     if ("{{d.GPA == None or d.SAT1600 == None}}" == "False") {
-                        chart_data0["{{d.status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.SAT1600 }}"})
+                        chart_data0["{{d.ed_status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.SAT1600 }}"})
+                        datapoint_added = true;
                     }
                 }
-                if ("{{d.status}}" in chart_data1) {
+                if ("{{d.ed_status}}" in chart_data1) {
                     if ("{{d.GPA == None or d.SAT2400 == None}}" == "False") {
-                        chart_data1["{{d.status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.SAT2400 }}"})
+                        chart_data1["{{d.ed_status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.SAT2400 }}"})
+                        datapoint_added = true;
                     }
                 }
-                if ("{{d.status}}" in chart_data2) {
+                if ("{{d.ed_status}}" in chart_data2) {
                     if ("{{d.GPA == None or d.ACT == None}}" == "False") {
-                        chart_data2["{{d.status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.ACT }}"})
+                        chart_data2["{{d.ed_status}}"].push({"x": "{{ d.GPA }}", "y": "{{ d.ACT }}"})
+                        datapoint_added = true;
                     }
                 }
+
+                if (datapoint_added) {
+                    if ("{{d.ed_status}}" == "Ed") {
+                        ed_sizes.push({{d.fin_aid_perc}} * 12)
+                    }
+                    if ("{{d.ed_status}}" == "Rd") {
+                        rd_sizes.push({{d.fin_aid_perc}} * 12)
+                    }
+                }
+
             {% endfor %}
 
-            newSC = function(chart_elem, chart_data, x_max, y_max, user_x, user_y) {
+            newSC = function(chart_elem, chart_data, x_max, y_max, user_x, user_y, chart_name) {
                 return new Chart(chart_elem, {
                     type: 'scatter',
                     data: {
                         datasets: [
                         {
                             label: 'RD - Accepted',
-                            pointRadius: 7,
+                            pointRadius: rd_sizes,
                             pointHoverRadius: 12,
                             backgroundColor: '#68FF33',
-                            data: chart_data["RA"]
-                        },
-
-                        {
-                            label: 'RD - Waitlisted',
-                            borderColor: '#C644FF',
-                            backgroundColor: '#C644FF',
-                            pointStyle: 'circle'
-                        },
-
-                        {
-                            label: 'RD - Waitlisted - Accepted',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            borderWidth: 3,
-                            borderColor: '#C644FF',
-                            backgroundColor: '#68FF33',
-                            data: chart_data["RWA"]
-                        },
-
-                        {
-                            label: 'RD - Waitlisted - Waitlisted',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            borderWidth: 3,
-                            borderColor: '#C644FF',
-                            backgroundColor: '#C644FF',
-                            data: chart_data["RWW"]
-                        },
-
-                        {
-                            label: 'RD - Waitlisted - Denied',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            borderWidth: 3,
-                            borderColor: '#C644FF',
-                            backgroundColor: '#FF4444',
-                            data: chart_data["RWD"]
-                        },
-
-                        {
-                            label: 'RD - Denied',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            backgroundColor: '#FF4444',
-                            data: chart_data["RD"]
+                            data: chart_data["Rd"]
                         },
 
                         {
                             label: 'ED - Accepted',
-                            pointRadius: 7,
+                            pointRadius: ed_sizes,
                             pointHoverRadius: 12,
                             pointStyle: 'rect',
                             backgroundColor: '#68FF33',
-                            data: chart_data["EA"]
-                        },
-
-                        {
-                            label: 'ED - Waitlisted',
-                            borderColor: '#C644FF',
-                            backgroundColor: '#C644FF',
-                            pointStyle: 'rect'
-                        },
-
-                        {
-                            label: 'ED - Waitlisted - Accepted',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            borderWidth: 3,
-                            pointStyle: 'rect',
-                            borderColor: '#C644FF',
-                            backgroundColor: '#68FF33',
-                            data: chart_data["EWA"]
-                        },
-
-                        {
-                            label: 'ED - Waitlisted - Waitlisted',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            borderWidth: 3,
-                            pointStyle: 'rect',
-                            borderColor: '#C644FF',
-                            backgroundColor: '#C644FF',
-                            data: chart_data["EWW"]
-                        },
-
-                        {
-                            label: 'ED - Waitlisted - Denied',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            borderWidth: 3,
-                            pointStyle: 'rect',
-                            borderColor: '#C644FF',
-                            backgroundColor: '#FF4444',
-                            data: chart_data["EWD"]
-                        },
-
-                        {
-                            label: 'ED - Denied',
-                            pointRadius: 7,
-                            pointHoverRadius: 12,
-                            pointStyle: 'rect',
-                            backgroundColor: '#FF4444',
-                            data: chart_data["ED"]
+                            data: chart_data["Ed"]
                         },
 
                         {
@@ -439,18 +342,17 @@
                         ]
                     },
                     options: {
+                        title: {
+                            display: true,
+                            position: 'top',
+                            text: [chart_name, "note: % financial aid is represented by point size"],
+                            fontSize: 14
+                        },
                         legend: {
                             display: true,
                             labels: {
                                 filter: function(legendItem, data) {
-                                    console.log(legendItem);
-                                    console.log(data);
-                                    console.log(legendItem.text)
-                                    console.log(legendItem.text in ['Your GPA/SAT'])
-                                    if (['Your GPA/SAT', 'RD - Accepted',
-                                        'RD - Waitlisted', 'RD - Denied',
-                                        'ED - Accepted', 'ED - Waitlisted',
-                                        'ED - Denied']
+                                    if (['Your GPA/SAT', 'RD - Accepted','ED - Accepted', 'ED - Waitlisted']
                                         .includes(legendItem.text)) {
                                         return true
                                     } else {
@@ -472,7 +374,16 @@
                                     suggestedMax: y_max
                                 }
                             }]
-                        }
+                        },
+
+                        // Start
+                        elements: {
+                            point: {
+                              pointRadius: 100
+                            }
+                          }
+
+
                     }
                 });
             }
@@ -483,9 +394,9 @@
             let chartElem1 = document.getElementById('chart1').getContext('2d');
             let chartElem2 = document.getElementById('chart2').getContext('2d');
 
-            var chart0 = newSC(chartElem0, chart_data0, 4, 1600, {{ user_gpa }}, {{ user_sat }})
-            var chart1 = newSC(chartElem1, chart_data1, 4, 2400, {{ user_gpa }}, {{ user_sat }})
-            var chart2 = newSC(chartElem2, chart_data2, 4, 36, {{ user_gpa }}, {{ user_act }})
+            var chart0 = newSC(chartElem0, chart_data0, 4, 1600, {{ user_gpa }}, {{ user_sat }}, "GPA vs SAT2400")
+            var chart1 = newSC(chartElem1, chart_data1, 4, 2400, {{ user_gpa }}, {{ user_sat }}, "GPA vs SAT1600")
+            var chart2 = newSC(chartElem2, chart_data2, 4, 36, {{ user_gpa }}, {{ user_act }}, "GPA vs ACT")
 
         </script>
 
