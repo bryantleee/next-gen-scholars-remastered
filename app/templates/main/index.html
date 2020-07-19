@@ -34,9 +34,9 @@
 <div class="ui inverted vertical masthead center aligned segment parallax_container" id="main_banner">
     <div id="main_header_container" class="ui text container" >
         <h1 class="ui inverted header" id="main_header">
-            Next Generation Scholars Portal
+            Admit-Ed
         </h1>
-        <h2>The best tools for the college admission process, made by and for NGS students</h2> <br />
+        <h2>The Next Generation Scholars Portal made by and for NGS students</h2> <br />
         {% if not current_user.is_authenticated %}
             <a class="ui huge primary button" style="background-color:#FF4249" href="{{url_for('account.login')}}">
                 Get Started
@@ -85,7 +85,8 @@
             <div class="column">
                 <img
                   class="ui centered small circular image"
-                  src="{{url_for('static',filename='images/user-avatar.jpg')}}"
+                  src="{{url_for('static',filename='images/wilner_and_co.jpeg')}}"
+                  style="width:200px;height:150px;"
                 />
                 <h1 class="ui header">Students</h1>
                 <p>
