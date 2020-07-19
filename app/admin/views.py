@@ -2,7 +2,7 @@ from flask import abort, flash, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from flask_rq import get_queue
 
-from .forms import (ChangeAccountTypeForm, ChangeUserEmailForm, InviteUserForm,
+from .forms import (ChangeAccountTypeForm, ChangeUserPasswordForm, InviteUserForm,
                     NewUserForm)
 
 from . import admin
@@ -100,21 +100,40 @@ def user_info(user_id):
     return render_template('admin/manage_user.html', user=user)
 
 
-@admin.route('/user/<int:user_id>/change-email', methods=['GET', 'POST'])
+# @admin.route('/user/<int:user_id>/change-email', methods=['GET', 'POST'])
+# @login_required
+# @admin_required
+# def change_user_email(user_id):
+#     """Change a user's email."""
+#     user = User.query.filter_by(id=user_id).first()
+#     if user is None:
+#         abort(404)
+#     form = ChangeUserEmailForm()
+#     if form.validate_on_submit():
+#         user.email = form.email.data
+#         db.session.add(user)
+#         db.session.commit()
+#         flash('Email for user {} successfully changed to {}.'.format(
+#             user.full_name(), user.email), 'form-success')
+#     return render_template('admin/manage_user.html', user=user, form=form)
+
+
+@admin.route('/user/<int:user_id>/change-password', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def change_user_email(user_id):
-    """Change a user's email."""
-    user = User.query.filter_by(id=user_id).first()
+def change_user_password(user_id):
+    """Change an existing user's password."""
+    form = ChangeUserPasswordForm()
+    user = User.query.get(user_id)
     if user is None:
         abort(404)
-    form = ChangeUserEmailForm()
     if form.validate_on_submit():
-        user.email = form.email.data
+        user.password = form.new_password.data
         db.session.add(user)
         db.session.commit()
-        flash('Email for user {} successfully changed to {}.'.format(
-            user.full_name(), user.email), 'form-success')
+        flash('{}\'s password has been updated.'.format(user.first_name), 'form-success')
+        return render_template('admin/manage_user.html', user=user, form=form)
+        
     return render_template('admin/manage_user.html', user=user, form=form)
 
 

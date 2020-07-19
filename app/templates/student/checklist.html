@@ -24,11 +24,13 @@
                         </a>
                     {% endif %}
                 </td>
-                <td> {{ '%s' % (item.text) }}
+                <td {% if item.deadline and today > item.deadline %} style="color:red;" {% endif %}> {{ '%s' % (item.text) }}
                 </td>
             	<td class="two wide">
                     {% if item.deadline %}
-                        <b> {{  '%s' % (item.deadline.strftime('%m-%d-%Y'))  }} </b>
+                        <b {% if today > item.deadline %} style="color:red;" {% endif %}> 
+                            {{  '%s' % (item.deadline.strftime('%m-%d-%Y'))  }} 
+                        </b>
                     {% endif %}
                 </td>
             </tr>

@@ -927,7 +927,8 @@ def checklist(student_profile_id):
             checklist=checklist_items,
             notifications=current_notifs,
             completed=completed_items,
-            student_profile_id=student_profile_id)
+            student_profile_id=student_profile_id,
+            today=date.today())
     abort(404)
 
 
