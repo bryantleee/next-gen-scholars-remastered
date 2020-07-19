@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}"/>
     </head>
     <body>
         {% set dropdown = [] %}
@@ -24,7 +25,7 @@
                   [
                     ('account.manage', 'Your Account', 'settings'),
                     ('admin.index', 'Manage Users', 'user'),
-                    ('account.logout', 'Log out', 'sign out'),
+                    ('account.logout', 'Log Out', 'sign out'),
                   ]
                 ),
               ]
@@ -35,7 +36,7 @@
               ('Account',
                 [
                   ('account.manage', 'Your Account', 'settings'),
-                  ('account.logout', 'Log out', 'sign out'),
+                  ('account.logout', 'Log Out', 'sign out'),
                 ]
               ),
             ]
@@ -46,7 +47,7 @@
               ('Account',
                 [
                   ('account.manage', 'Your Account', 'settings'),
-                  ('account.logout', 'Log out', 'sign out'),
+                  ('account.logout', 'Log Out', 'sign out'),
                 ]
               ),
             ]
@@ -89,4 +90,6 @@
     }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="{{ url_for('static', filename='scripts/confetti.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/js.cookie.min.js') }}"></script>
 </html>
