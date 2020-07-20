@@ -21,7 +21,7 @@ from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
                       ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
-                      get_colors, Resource, validate_csvs)
+                      get_colors, Resource, validate_csvs, extract_url_or_name)
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -587,12 +587,17 @@ def add_college():
     # Allows a counselor to add a college profile.
     form = AddCollegeProfileForm()
     if form.validate_on_submit():
-        name = College.query.filter_by(name=form.name.data).first()
-        if name is None:
+        extracted_value, val_type = extract_url_or_name(form.name.data)
+        if val_type == 'scorecard_id':
+            college = College.query.filter_by(scorecard_id=extracted_value).first()
+        else:
+            college = College.query.filter_by(name=extracted_value).first()
+
+        if college is None:
             # College didn't already exist in database, so add it.
             college = College(
-                name=form.name.data,
-                scorecard_id=interpret_scorecard_input(""),
+                name=extracted_value if val_type == 'name' else '',
+                scorecard_id=extracted_value if val_type == 'scorecard_id' else None,
                 description=form.description.data,
                 gpa_unweighted_average_overall=form.gpa_unweighted_average_overall.data,
                 early_deadline=form.early_deadline.data,
@@ -610,13 +615,8 @@ def add_college():
                 room_and_board = 0,
                 sat_score_average_overall = 0,
                 act_score_average_overall = 0)
-            add_worked = College.retrieve_college_info(college)
-            if not add_worked:
-                flash('Input Error. Please check your form over.')
-                return render_template(
-                    'counselor/add_college.html', form=form, header='Add College Profile')
+            College.retrieve_college_info(college, change_name=val_type=='scorecard_id')
             db.session.add(college)
-
         else:
             flash('College could not be added - already exists in database.',
                   'error')
@@ -630,16 +630,18 @@ def add_college():
 @login_required
 @counselor_required
 def edit_college_step1():
-    # Allows a counselor to choose which college they want to edit.
-    form = EditCollegeProfileStep1Form()
-    if form.validate_on_submit():
-        college = College.query.filter_by(name=form.name.data.name).first()
-        return redirect(
-            url_for('counselor.edit_college_step2', college_id=college.id))
-    return render_template(
-        'counselor/edit_college.html',
-        form=form,
-        header='Edit College Profile')
+    return redirect(
+            url_for('counselor.colleges'))
+#     # Allows a counselor to choose which college they want to edit.
+#     form = EditCollegeProfileStep1Form()
+#     if form.validate_on_submit():
+#         college = College.query.filter_by(name=form.name.data.name).first()
+#         return redirect(
+#             url_for('counselor.edit_college_step2', college_id=college.id))
+#     return render_template(
+#         'counselor/edit_college.html',
+#         form=form,
+#         header='Edit College Profile')
 
 
 @counselor.route('/edit_college/<int:college_id>', methods=['GET', 'POST'])
@@ -660,8 +662,11 @@ def edit_college_step2(college_id):
         acceptance_deadline=old_college.acceptance_deadline)
     if form.validate_on_submit():
         college = old_college
-        college.name = form.name.data
-        college.scorecard_id=interpret_scorecard_input("")
+        extracted_value, val_type = extract_url_or_name(form.name.data)
+        if val_type == 'scorecard_id':
+            college.scorecard_id=extracted_value
+        else:
+            college.name = extracted_value
         college.description = form.description.data
         college.gpa_unweighted_average_overall = form.gpa_unweighted_average_overall.data
         college.early_deadline = form.early_deadline.data
@@ -669,7 +674,7 @@ def edit_college_step2(college_id):
         college.scholarship_deadline = form.scholarship_deadline.data
         college.fafsa_deadline = form.fafsa_deadline.data
         college.acceptance_deadline = form.acceptance_deadline.data
-        College.retrieve_college_info(college)
+        College.retrieve_college_info(college, change_name=val_type=='scorecard_id')
         db.session.add(college)
         db.session.commit()
         flash('College profile successfully edited.', 'form-success')

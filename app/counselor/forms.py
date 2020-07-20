@@ -151,7 +151,7 @@ class DeleteTestNameForm(Form):
 
 class AddCollegeProfileForm(Form):
     name = StringField(
-        'College/University Name',
+        'College/University Name OR College Scorecard URL (use the College Scorecard URL it consistently gives you an error)',
         validators=[InputRequired(), Length(1, 200)])
     description = StringField(u'Description',
         validators=[Optional()],
@@ -235,7 +235,7 @@ class EditResourceForm(Form):
 
 class EditCollegeProfileStep2Form(Form):
     name = StringField(
-        'College/University Name',
+        'College/University Name OR College Scorecard URL (use the College Scorecard URL it consistently gives you an error)',
         validators=[InputRequired(), Length(1, 200)])
     # Input not required for either deadline.
     description = StringField(

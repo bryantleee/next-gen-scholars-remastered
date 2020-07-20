@@ -429,7 +429,7 @@ class College(db.Model):
         return(data)
 
     @staticmethod
-    def retrieve_college_info(college):
+    def retrieve_college_info(college, change_name=False):
         ''' This method takes in a College, attempts to find the college that best matches
         with our query, and fill in the variables of the college accordingly.
         Always called after college.name has been initialized
@@ -440,6 +440,7 @@ class College(db.Model):
         data = College.search_college_scorecard(college)
 
         if data is None:
+            college.scorecard_id=None
             return False
 
         # If there are some colleges that match with the query
@@ -456,6 +457,9 @@ class College(db.Model):
                         firstFoundIdx = idx
                         result = r
             y = college.year_data_collected
+
+            if change_name and result['school.name']:
+                college.name = result['school.name']
 
             if result[y + '.admissions.admission_rate.overall'] is not None:
                 college.admission_rate = round(result[y + '.admissions.admission_rate.overall']*100,2)

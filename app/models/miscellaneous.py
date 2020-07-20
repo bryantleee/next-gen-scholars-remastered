@@ -138,5 +138,11 @@ def interpret_scorecard_input(form_input):
             return group
     return ''
 
+def extract_url_or_name(form_input):
+    matches = re.findall('^.*collegescorecard.ed.gov/school/\?(\d+).*$', form_input.strip())
+    if matches:
+        return int(matches[0]), 'scorecard_id'
+    return form_input, 'name'
+
 def get_colors():
     return ('red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink')
