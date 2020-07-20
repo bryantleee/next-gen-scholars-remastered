@@ -261,9 +261,8 @@ class EditCollegeProfileStep2Form(Form):
         'Fafsa Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
         validators=[Optional()])
-    acceptance_deadline = DateField(
-        'Acceptance Deadline (mm-dd-yyyy)',
-        format='%Y-%m-%d',
+    acceptance_deadline = StringField(
+        'Acceptance Deadline (any format)',
         validators=[Optional()])
     submit = SubmitField('Save College Profile')
 

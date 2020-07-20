@@ -118,10 +118,11 @@ def get_state_name_from_abbreviation(state):
 # you can always add http because it will get bumped up to https if available, 
 # but you can't bump down from https to http
 def fix_url(url):
-    match = re.search('^https?:\/\/', url)
-    if not match:
-        url = 'http://' + url
-    return url
+    if url:
+        match = re.search('^https?:\/\/', url)
+        if not match:
+            url = 'http://' + url
+        return url
 
 
 # will parse out the Collegecard ID from either URL or raw id input. 

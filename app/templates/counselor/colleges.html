@@ -45,6 +45,9 @@
                     <!--TODO: Make everything under the same onclick.-->
 
                     {% for c in colleges | sort(attribute='name') %}
+                        <tr 
+                            {% if not c.scorecard_id %} style="background-color:#FFB6C1;" {%endif%}
+                        >   
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">{{ c.name }}</td>
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">{{ c.description }}</td>
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">
