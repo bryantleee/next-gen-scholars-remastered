@@ -102,7 +102,8 @@ def upload_scholarship_file():
 def colleges():
     """View all colleges."""
     colleges = College.query.all()
-    return render_template('counselor/colleges.html', colleges=colleges)
+    has_errors = College.query.filter_by(scorecard_id=None).first() is None
+    return render_template('counselor/colleges.html', colleges=colleges, has_errors=has_errors)
 
 
 @csrf.exempt
@@ -157,60 +158,8 @@ def upload_college_file():
                 College.retrieve_college_info(college)
                 db.session.add(college)
             db.session.commit()
-        return render_template('counselor/upload_colleges.html')
+        return redirect(url_for('counselor.colleges'))
     return render_template('counselor/upload_colleges.html')
-
-    #     return render_template('counselor/upload_scattergram.html', message=message, message_type=message_type)
-    # return render_template('counselor/upload_scattergram.html', message=None, message_type=None)
-
-    #     header_row = True
-    #     for row in csv_input:
-    #         if header_row:
-    #             header_row = False
-    #             continue
-    #         if len(row) >= 9 and any(row):
-    #             # check that there are at least eight columns
-    #             # and the row is not completely blank
-    #             college = College.query.filter_by(name=row[0]).first()
-    #             # College didn't already exist in database, so add it.
-    #             if college is None:
-    #                 college = College(
-    #                     name=row[0],
-    #                     description=row[1],
-    #                     gpa_unweighted_average_overall=row[2],
-    #                     regular_deadline=datetime.datetime.strptime(
-    #                         row[3], "%m/%d/%y") if row[3] else None,
-    #                     early_deadline=datetime.datetime.strptime(
-    #                         row[4], "%m/%d/%y") if row[4] else None,
-    #                     fafsa_deadline=datetime.datetime.strptime(
-    #                         row[5], "%m/%d/%y") if row[5] else None,
-    #                     acceptance_deadline=datetime.datetime.strptime(
-    #                         row[6], "%m/%d/%y") if row[6] else None,
-    #                     scholarship_deadline=datetime.datetime.strptime(
-    #                         row[7], "%m/%d/%y") if row[7] else None,
-    #                     image = row[8]
-    #                 )
-
-    #             # else update the existing college
-    #             else:
-    #                 college.description = row[1]
-    #                 college.gpa_unweighted_average_overall = row[2]
-    #                 college.regular_deadline = datetime.datetime.strptime(
-    #                         row[3], "%m/%d/%y") if row[3] else None
-    #                 college.early_deadline = datetime.datetime.strptime(
-    #                         row[4], "%m/%d/%y") if row[4] else None
-    #                 college.fafsa_deadline = datetime.datetime.strptime(
-    #                         row[5], "%m/%d/%y") if row[5] else None
-    #                 college.acceptance_deadline = datetime.datetime.strptime(
-    #                         row[6], "%m/%d/%y") if row[6] else None
-    #                 college.scholarship_deadline = datetime.datetime.strptime(
-    #                         row[7], "%m/%d/%y") if row[7] else None
-    #                 college.image = row[7]
-    #                 College.retrieve_college_info(college)
-    #             db.session.add(college)
-    #     db.session.commit()
-    #     return redirect(url_for('counselor.colleges'))
-    # return render_template('counselor/upload_colleges.html')
 
 
 @counselor.route('/new-user', methods=['GET', 'POST'])

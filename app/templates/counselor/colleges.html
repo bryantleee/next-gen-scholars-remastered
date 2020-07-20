@@ -9,7 +9,6 @@
                     View and edit colleges and their deadlines.
                 </div>
             </h2>
-
             <div class="ui menu">
                 <div class="ui search item">
                     <div class="ui transparent icon input">
@@ -30,6 +29,11 @@
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
+             {% if has_errors %}  <div style="margin-top:5px; margin-bottom:10px; color:red;" class="sub header">
+                Data for some colleges could not be found. These rows are highlighted in red. Please edit the colleges with the CollegeScorecard URL to fix these errors.
+             </div>
+            {% endif %}
+
             <div style="overflow-x: scroll;">
                 <table class="ui searchable sortable unstackable selectable celled table">
                     <thead>

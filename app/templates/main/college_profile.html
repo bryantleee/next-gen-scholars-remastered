@@ -13,6 +13,11 @@
     </div>
 {% endmacro %}
 
+{% macro create_deadline(description, deadline) %}
+    {% if deadline != None%}
+        <p><strong>{{ description }}</strong>: {{ deadline.strftime('%m/%d/%Y') }}</p>
+    {% endif %}
+{% endmacro %}
 
 {% macro create_link_box(url, description, extra_classes=none, icon_class=none)%}
     <div class="column">
@@ -221,10 +226,10 @@
 
         <div class="ui raised secondary green segment college_info"> 
             <h1 class="ui header college_info_section_header">Deadlines</h1>
-            <p><strong>Early</strong>: {{ college.early_deadline }}</p>
-            <p><strong>Regular</strong>: {{ college.regular_deadline }}</p>
-            <p><strong>Scholarship</strong>: {{ college.scholarship_deadline }}</p>
-            <p><strong>FAFSA Deadline</strong>: {{ college.fafsa_deadline }}</p>
+            {{create_deadline('Early', college.early_deadline)}}
+            {{create_deadline('Regular', college.regular_deadline)}}
+            {{create_deadline('Scholarship', college.scholarship_deadline)}}
+            {{create_deadline('FAFSA', college.fafsa_deadline)}}
             <p><strong>Acceptance Deadline</strong>: {{ college.acceptance_deadline }}</p>
         </div>
 
