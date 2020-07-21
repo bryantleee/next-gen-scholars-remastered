@@ -36,7 +36,7 @@ class College(db.Model):
     early_deadline = db.Column(db.Date, index=True)
     fafsa_deadline = db.Column(db.Date, index=True)
     scholarship_deadline = db.Column(db.Date, index=True)
-    acceptance_deadline = db.Column(db.Date, index=True)
+    acceptance_deadline = db.Column(db.String, index=True)
     plot_SAT2400 = db.Column(db.String)
     plot_SAT1600 = db.Column(db.String)
     plot_ACT = db.Column(db.String)
@@ -362,7 +362,7 @@ class College(db.Model):
         @return a dictionary of information about colleges that match with our query'''
 
 
-        if college.scorecard_id is not '':
+        if college.scorecard_id:
             nameNewFormat='id=' + str(college.scorecard_id)
 
         else:
@@ -417,7 +417,11 @@ class College(db.Model):
             r.raise_for_status()
             data = r.json()
         except HTTPError:
-            print('error')
+            print(r.status_code)
+            print(urlStr)
+            print('could not find college scorecard data for', college.name)
+            print('type:', type(college.name), '\n')
+
 
         else:
             college.year_data_collected = year
@@ -425,7 +429,7 @@ class College(db.Model):
         return(data)
 
     @staticmethod
-    def retrieve_college_info(college):
+    def retrieve_college_info(college, change_name=False):
         ''' This method takes in a College, attempts to find the college that best matches
         with our query, and fill in the variables of the college accordingly.
         Always called after college.name has been initialized
@@ -436,6 +440,7 @@ class College(db.Model):
         data = College.search_college_scorecard(college)
 
         if data is None:
+            college.scorecard_id=None
             return False
 
         # If there are some colleges that match with the query
@@ -452,6 +457,9 @@ class College(db.Model):
                         firstFoundIdx = idx
                         result = r
             y = college.year_data_collected
+
+            if change_name and result['school.name']:
+                college.name = result['school.name']
 
             if result[y + '.admissions.admission_rate.overall'] is not None:
                 college.admission_rate = round(result[y + '.admissions.admission_rate.overall']*100,2)
@@ -474,7 +482,6 @@ class College(db.Model):
                 college.median_debt_first_gen = result[y+'.aid.median_debt.first_generation_students']
             if result[y+'.aid.median_debt.non_first_generation_students'] is not None:
                 college.median_debt_non_first_gen = result[y+'.aid.median_debt.non_first_generation_students']
-
             if result[y + '.student.size'] is not None:
                 college.school_size = result[y + '.student.size']
             if result['school.city'] is not None:

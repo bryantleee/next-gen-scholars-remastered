@@ -1,6 +1,7 @@
-import pandas as pd
-from difflib import get_close_matches
 from math import isnan
+from difflib import get_close_matches
+import pandas as pd
+from dateutil import parser
 
 def is_in_range(value, valid_ranges_inclusive):
     '''
@@ -17,7 +18,7 @@ def validate_scattergram_csv(content, valid_students, valid_colleges):
     '''
     Validates data in the scattergram uploading CSV
 
-    content: raw string of a CSV file
+    content: IO stream of a CSV file
     valid_students: list strings of of valid students to compare against
     valid_colleges: list strings of of valid colleges to compare against
     '''
@@ -89,13 +90,65 @@ def validate_scattergram_csv(content, valid_students, valid_colleges):
                     return False, error_message
 
     return True, df
+    
 
-if __name__ == '__main__':
-    df = pd.DataFrame([
-        ['Billy Numerous', 'Cornell University', 'Denied', 1.2, None, 1300, None],
-        ['Kanye West', None, None, 3.2, 2400, 0, 32]
-    ])
-    valid_students = ['Bryant Lee', 'Jimmy Pee', 'Kyle Sayers', 'Billy Numerous', 'Kanye West']
-    valid_colleges = ['Cornell University', 'Princeton University', 'Boston University', 'Boston College']
+def parse_dates(column_of_strings):
+    '''
+    Parses dates for a list/column of strings. Returns a list of dt objects 
+    Will return None if it cannot parse a date
+    
+    this will allow more fluid types of date inputs rather than using pd.to_datetime
+    '''
+    dt_objects = []
+    for date in column_of_strings:
+        try:
+            dt_objects.append(parser.parse(date))
+        except (ValueError, TypeError):
+            # Unable to parse date from string or if is value is not a string
+            dt_objects.append(None) 
+    return dt_objects
+    
 
-    print(validate_scattergram_csv(df, valid_students, valid_colleges))
+def validate_college_csv(content):
+    '''
+    Validates college upload CSV.
+    
+    content: IO stream of a CSV file
+    '''
+    # Try to transform into dataframe
+    try:
+        df = pd.read_csv(content)
+    except:
+        return False, 'There is a fatal CSV formatting error. Please redownload the CSV and try again.'
+    
+    df_columns = ('College','Description', 'Unweighted GPA', 
+               'Regular Deadline (RD)', 'Early Deadline (ED)', 
+               'Scholarship Deadline', 'FAFSA Deadline', 
+               'Acceptance Announcement Date')
+    
+    date_cols = ('Regular Deadline (RD)', 'Early Deadline (ED)', 'Scholarship Deadline', 'FAFSA Deadline')
+    
+    # make sure there are the right amount of columns
+    if df.shape[1] != 8:
+        return False, \
+            'There are {} columns. Please make sure that there are 8 columns, as show exactly in the picture.'.format(df.shape[1])
+    
+    df.columns = df_columns
+    
+    # Turn dates into DT Objects
+    for date_col in date_cols:
+        df[date_col] = parse_dates(df[date_col])
+    
+    # Validate if GPA data
+    for unweighted_gpa in df['Unweighted GPA']:
+        try:
+            float(unweighted_gpa)
+        except ValueError:
+            return False, \
+                'GPA Value type is not correct. Make sure all numbers in the column are numbers with decimals.'
+        
+        if not 0 <= unweighted_gpa <= 5:
+            return False, \
+                '{} is not a valid GPA value.'.format(unweighted_gpa)
+        
+    return True, df
