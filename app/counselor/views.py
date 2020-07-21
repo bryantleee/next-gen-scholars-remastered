@@ -102,7 +102,7 @@ def upload_scholarship_file():
 def colleges():
     """View all colleges."""
     colleges = College.query.all()
-    has_errors = College.query.filter_by(scorecard_id=None).first() is None
+    has_errors = College.query.filter(College.scorecard_id == None).first() 
     return render_template('counselor/colleges.html', colleges=colleges, has_errors=has_errors)
 
 
@@ -128,7 +128,7 @@ def upload_college_file():
                 # College didn't already exist in database, so add it.
                     college = College(
                         name=college_name,
-                        scorecard_id = '',
+                        scorecard_id = None,
                         description=row[1]['Description'],
                         gpa_unweighted_average_overall=row[1]['Unweighted GPA'],
                         regular_deadline=row[1]['Regular Deadline (RD)'].to_pydatetime() if not pd.isnull(row[1]['Regular Deadline (RD)']) else None,
