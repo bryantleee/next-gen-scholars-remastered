@@ -626,7 +626,7 @@ class College(db.Model):
                 college = College(
                     name=c,
                     admission_rate = 0,
-                    scorecard_id = '',
+                    scorecard_id = None,
                     description='',
                     regular_deadline=None,
                     early_deadline=None,
