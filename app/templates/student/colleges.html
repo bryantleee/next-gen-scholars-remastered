@@ -34,6 +34,7 @@
                 <tbody>
 
                 {% for c in colleges | sort(attribute='name') %}
+                    {% if c.scorecard_id %}
                     <tr onclick="window.location.href = '{{ url_for('student.view_college_profile', college_id=c.id) }}';">
                         <td>{{ c.name }}</td>
                         <td>{{ c.description }}</td>
@@ -53,6 +54,7 @@
                                 {% endif %}
                             </td>
                     </tr>
+                    {%endif%}
                 {% endfor %}
                 </tbody>
             </table>
