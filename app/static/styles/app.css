@@ -292,6 +292,19 @@ table.selectable tr:hover {
   }
 }
 
+.stat_label{
+  margin-right: 5px;
+  margin-left:5px;
+}
+
+.statistic{
+  margin-left: 50px;
+  margin-right: 50px;;
+}
+
+.stat_row{
+  justify-content: center !important;
+}
 
 /*index*/
 #main_header{
