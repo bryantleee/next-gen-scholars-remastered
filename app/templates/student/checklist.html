@@ -3,14 +3,14 @@
 
 {% macro render_checklist(checklist) %}
     <table class="ui table">
-        <thead>
+        <thead class="hide_row_headerm">
             <tr><th colspan="3">
               Upcoming
             </th>
         </tr></thead>
         {% if checklist|length > 0 %}
     	{% for item in checklist %}
-            <tr>
+            <tr class="centerm">
                 <td class = "collapsing">
                     <a class="ui small basic icon button" href="{{ url_for('student.complete_checklist_item', item_id=item.id) }}">
                         <i class="checkmark box icon"></i>
@@ -47,14 +47,14 @@
 
 {% macro completed_list(completed) %}
     <table class="ui table">
-        <thead>
+        <thead class="hide_row_headerm">
             <tr><th colspan="2">
               Completed
             </th>
         </tr></thead>
         {% if completed|length > 0 %}
         {% for item in completed %}
-            <tr class="positive">
+            <tr class="centerm positive">
                 <td class="collapsing">
                     <a class="ui small basic icon button" href="{{ url_for('student.undo_checklist_item', item_id=item.id) }}">
                         <i class="undo icon"></i>

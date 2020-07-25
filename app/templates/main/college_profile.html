@@ -14,8 +14,11 @@
 {% endmacro %}
 
 {% macro create_deadline(description, deadline) %}
-    {% if deadline != None%}
-        <p><strong>{{ description }}</strong>: {{ deadline.strftime('%m/%d/%Y') }}</p>
+    {% if deadline %}
+    <div class="ui segment stat_box" >
+        <h2 class="medium_stat_title">{{ deadline.strftime('%m/%d/%Y') }}</h2>
+        <h3 class="medium_stat_subtitle"> {{ description }} </h3>
+    </div>
     {% endif %}
 {% endmacro %}
 
@@ -50,7 +53,7 @@
 
         <div class="ui raised secondary green segment college_info">
             <h1 style="margin-bottom:15px;" class="ui header college_info_section_header">Useful Links</h1>
-            <div class="ui three column doubling stackable grid container stretched flex_wrapper">
+            <div class="ui three column doubling stackable grid card_container stretched flex_wrapper">
                 {{ create_link_box(website_url, 'School Website', 'uni_web', 'university') }}
                 {{ create_link_box(net_cost_url, 'Net Cost Calculator', 'uni_cost', 'dollar sign') }}
                 {{ create_link_box('https://collegescorecard.ed.gov/school/?'+college.scorecard_id|string, 'College Scorecard Profile', 'uni_scd', 'chart bar') }}
@@ -62,7 +65,7 @@
             <h1 class="ui header college_info_section_header">{{college.name}} at a Glance</h1>
             <p style="font-size:18px;margin-bottom:15px;">{{ college.description }} </p>
 
-            <div class="ui three column doubling stackable grid container stretched flex_wrapper">
+            <div class="ui three column doubling stackable grid stretched flex_wrapper card_container">
                 <div class="column">
                     <div class="ui segment" style="text-align: center;">
                         <h2 class="big_stat_title"> {{ college.admission_rate }}% </h1>
@@ -91,7 +94,7 @@
                         <h3 class="medium_stat_subtitle"> Location </h3>
                     </div>
                     {% endif %}
-                    {% if college.school_city != "" %}
+                    {% if college.school_city %}
                         {{create_medium_stat_box("{0:,.0f}".format(college.school_size), 'Undergraduate Size')}}
                     {% endif %}
                 </div>
@@ -107,7 +110,7 @@
         <div class="ui raised secondary green segment college_info">
             <h1 class="ui header college_info_section_header">Costs</h1>
 
-            <div class="ui two column doubling stackable grid container flex_wrapper">
+            <div class="ui two column doubling stackable grid card_container flex_wrapper">
                 <div class="column">
 
                     {% if college.tuition_in_state == college.tuition_out_of_state %}
@@ -118,7 +121,7 @@
                     {% endif %}
 
 
-                     <div class="ui two column doubling stackable grid container stretched flex_wrapper">
+                     <div class="ui two column doubling stackable grid card_container stretched flex_wrapper">
                         <div class="column">
                             {% if college.room_and_board != 0.0 %}
                             {{create_medium_stat_box('$'+"{0:,.0f}".format(college.room_and_board), 'Room and Board')}}
@@ -161,7 +164,7 @@
             or college.median_debt_income_75001_plus is not none %}
         <div class="ui raised secondary green segment college_info">
             <h1 class="ui header college_info_section_header">Debt</h1>
-                <div class="ui two column doubling stackable grid container flex_wrapper">
+                <div class="ui two column doubling stackable grid card_container flex_wrapper">
                     {% if college.median_debt_first_gen is not none or college.median_debt_first_gen is not none%}
                     <div class="column">
                         {% if college.median_debt_first_gen is not none%}
@@ -193,7 +196,7 @@
 
         <div class="ui raised secondary green segment college_info">
             <h1 class="ui header college_info_section_header">Student Demographics</h1>
-                <div class="ui two column doubling stackable grid container flex_wrapper">
+                <div class="ui two column doubling stackable grid card_container flex_wrapper">
                     {% if college.median_debt_first_gen is not none or college.median_debt_first_gen is not none%}
                     <div class="column">
                         {% if college.first_generation_percentage is not none%}
@@ -223,15 +226,20 @@
 
                 </div>
         </div>
-
+        
+        {% if college.early_deadline or college.regular_deadline or college.scholarship_deadline or college.fafsa_deadline or college.acceptance_deadline %}
         <div class="ui raised secondary green segment college_info">
-            <h1 class="ui header college_info_section_header">Deadlines</h1>
-            {{create_deadline('Early', college.early_deadline)}}
-            {{create_deadline('Regular', college.regular_deadline)}}
-            {{create_deadline('Scholarship', college.scholarship_deadline)}}
-            {{create_deadline('FAFSA', college.fafsa_deadline)}}
-            <p><strong>Acceptance Deadline</strong>: {{ college.acceptance_deadline }}</p>
+                <h1 class="ui header college_info_section_header">Deadlines</h1>
+                {{create_deadline('Early', college.early_deadline)}}
+                {{create_deadline('Regular', college.regular_deadline)}}
+                {{create_deadline('Scholarship', college.scholarship_deadline)}}
+                {{create_deadline('FAFSA', college.fafsa_deadline)}}
+                {% if college.acceptance_deadline%}
+                    {{create_medium_stat_box(college.acceptance_deadline, 'Acceptance Deadline')}}
+                {% endif %}
         </div>
+        {% endif %}
+
 
         <div class="container">
             <canvas height="250px" id="chart0"></canvas>
