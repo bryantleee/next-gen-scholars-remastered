@@ -14,8 +14,11 @@
 {% endmacro %}
 
 {% macro create_deadline(description, deadline) %}
-    {% if deadline != None%}
-        <p><strong>{{ description }}</strong>: {{ deadline.strftime('%m/%d/%Y') }}</p>
+    {% if deadline %}
+    <div class="ui segment stat_box" >
+        <h2 class="medium_stat_title">{{ deadline.strftime('%m/%d/%Y') }}</h2>
+        <h3 class="medium_stat_subtitle"> {{ description }} </h3>
+    </div>
     {% endif %}
 {% endmacro %}
 
@@ -223,15 +226,20 @@
 
                 </div>
         </div>
-
+        
+        {% if college.early_deadline or college.regular_deadline or college.scholarship_deadline or college.fafsa_deadline or college.acceptance_deadline %}
         <div class="ui raised secondary green segment college_info">
-            <h1 class="ui header college_info_section_header">Deadlines</h1>
-            {{create_deadline('Early', college.early_deadline)}}
-            {{create_deadline('Regular', college.regular_deadline)}}
-            {{create_deadline('Scholarship', college.scholarship_deadline)}}
-            {{create_deadline('FAFSA', college.fafsa_deadline)}}
-            <p><strong>Acceptance Deadline</strong>: {{ college.acceptance_deadline }}</p>
+                <h1 class="ui header college_info_section_header">Deadlines</h1>
+                {{create_deadline('Early', college.early_deadline)}}
+                {{create_deadline('Regular', college.regular_deadline)}}
+                {{create_deadline('Scholarship', college.scholarship_deadline)}}
+                {{create_deadline('FAFSA', college.fafsa_deadline)}}
+                {% if college.acceptance_deadline%}
+                    {{create_medium_stat_box(college.acceptance_deadline, 'Acceptance Deadline')}}
+                {% endif %}
         </div>
+        {% endif %}
+
 
         <div class="container">
             <canvas height="250px" id="chart0"></canvas>
