@@ -275,16 +275,22 @@ table.selectable tr:hover {
   }
 }
 
+.student_profile_footer_rightd_centerm{
+  text-align: right;
+}
+
 @media only screen and (max-width: 768px) {
   .hide_row_header {
       display: none !important;
   }
+  .student_profile_footer_rightd_centerm{
+    text-align: center;
+  }
+  .centerm{
+    text-align: center;
+    font-size: 15px;
+  }
 }
-/* thead{
-  display: none;
-
-} */
-
 
 
 /*index*/
@@ -310,8 +316,6 @@ table.selectable tr:hover {
 }
 
 .parallax_container{
-  /* height: 100%; */
-
   /* Create the parallax scrolling effect */
   background-attachment: fixed;
   background-repeat: no-repeat;
