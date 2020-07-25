@@ -253,6 +253,10 @@ table.selectable tr:hover {
   justify-content: space-evenly;
 }
 
+.card_container{
+  margin: auto !important;
+}
+
 @media only screen and (max-width: 1200px) {
   .medium_stat_title {
     font-size: 25px;
@@ -265,6 +269,9 @@ table.selectable tr:hover {
     padding-bottom:30px; 
     font-family: 'IBM Plex Serif', serif;
   
+  }
+  .big_stat_title{
+    font-size: 40px;
   }
 }
 
