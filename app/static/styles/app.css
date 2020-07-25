@@ -275,6 +275,17 @@ table.selectable tr:hover {
   }
 }
 
+@media only screen and (max-width: 768px) {
+  .hide_row_header {
+      display: none !important;
+  }
+}
+/* thead{
+  display: none;
+
+} */
+
+
 
 /*index*/
 #main_header{
