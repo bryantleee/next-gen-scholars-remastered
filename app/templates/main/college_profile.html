@@ -66,15 +66,18 @@
             <p style="font-size:18px;margin-bottom:15px;">{{ college.description }} </p>
 
             <div class="ui three column doubling stackable grid stretched flex_wrapper card_container">
+                {% if college.admission_rate is not none %}
+
                 <div class="column">
                     <div class="ui segment" style="text-align: center;">
                         <h2 class="big_stat_title"> {{ college.admission_rate }}% </h1>
                         <h3 class="big_stat_subtitle"> Acceptance Rate </h2>
-                        {% if college.admission_rate is not none and college.admission_rate < 30.0 %}
+                        {% if college.admission_rate < 30.0 %}
                         <em>&emsp; Note: Don't be deterred by an acceptance rate if the rest of your profile fits the school!</em>
                         {% endif %}
                     </div>
                 </div>
+                {% endif %}
 
                 {% if college.sat_score_average_overall != 0.0 or college.act_score_average_overall != 0.0 %}
                 <div class="column">
@@ -94,7 +97,7 @@
                         <h3 class="medium_stat_subtitle"> Location </h3>
                     </div>
                     {% endif %}
-                    {% if college.school_city %}
+                    {% if college.school_size %}
                         {{create_medium_stat_box("{0:,.0f}".format(college.school_size), 'Undergraduate Size')}}
                     {% endif %}
                 </div>
