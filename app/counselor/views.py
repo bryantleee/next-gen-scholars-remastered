@@ -20,7 +20,7 @@ from ..decorators import admin_required
 from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
-                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
+                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input,
                       get_colors, Resource, validate_csvs, extract_url_or_name)
 
 import google.oauth2.credentials
@@ -102,7 +102,7 @@ def upload_scholarship_file():
 def colleges():
     """View all colleges."""
     colleges = College.query.all()
-    has_errors = College.query.filter(College.scorecard_id == None).first() 
+    has_errors = College.query.filter(College.scorecard_id == None).first()
     return render_template('counselor/colleges.html', colleges=colleges, has_errors=has_errors)
 
 
@@ -116,9 +116,9 @@ def upload_college_file():
         f = request.files['file']
         stream = io.StringIO(f.stream.read().decode("utf-8"))
         success, df = validate_csvs.validate_college_csv(stream)
-        
+
         if not success:
-            message, message_type = df, 'negative'
+            message, message_type = str(df), 'negative'
         else:
             message, message_type = 'Upload successful!', 'positive'
             for row in df.iterrows():
@@ -158,8 +158,8 @@ def upload_college_file():
                 College.retrieve_college_info(college)
                 db.session.add(college)
             db.session.commit()
-        return redirect(url_for('counselor.colleges'))
-    return render_template('counselor/upload_colleges.html')
+        return render_template('counselor/upload_colleges.html', message=message, message_type=message_type)
+    return render_template('counselor/upload_colleges.html', message=None, message_type=None)
 
 
 @counselor.route('/new-user', methods=['GET', 'POST'])
@@ -755,6 +755,7 @@ def upload_scattergram():
             message, message_type = df, 'negative'
         else:
             message, message_type = 'Upload successful!', 'positive'
+            db.session.query(ScattergramData).delete() # Delete previous data
             for row in df.iterrows():
                 point = ScattergramData(
                     name=row[1]['student name'],

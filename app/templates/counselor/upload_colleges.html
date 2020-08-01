@@ -8,6 +8,14 @@
          <!-- TOOO: update picture/instructions -->
          <h2 class="ui header">
             Upload College Data
+            {% if message %}
+            <div class="ui {{ message_type }} message">
+               <i class="close icon"></i>
+               <div class="header">
+                 {{ message }}
+               </div>
+             </div>
+            {% endif %}
             <div class="sub header">
                Upload CSV of college descriptions and deadlines.
             </div>
