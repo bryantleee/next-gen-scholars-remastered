@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="five wide column">
-      <button class="right floated ui button" onclick="window.location.href='{{ url_for('student.edit_profile', student_profile_id=user.student_profile.id) }}';"><i class="ui edit icon"></i>Edit Profile</button>
+      <button class="right floated ui button" onclick="window.location.href='{{ url_for('counselor.edit_profile', student_profile_id=user.student_profile.id) }}';"><i class="ui edit icon"></i>Edit Profile</button>
       <button class="right floated ui button" onclick="window.location.href='{{ url_for('student.checklist', student_profile_id=user.student_profile.id) }}';"><i class="ui tasks icon"></i>View Tasks</button>
     </div>
   </div>

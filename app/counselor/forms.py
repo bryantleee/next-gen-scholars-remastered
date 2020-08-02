@@ -12,6 +12,32 @@ from wtforms.validators import Email, EqualTo, InputRequired, Length, Optional
 from .. import db
 from ..models import Role, User, TestName, College, Scholarship
 
+class EditStudentProfile(Form):
+    grade = SelectField(
+        'Grade',
+        choices=[('9', '9th Grade'), ('10', '10th Grade'),
+                 ('11', '11th Grade'), ('12', '12th Grade')])
+    high_school = StringField(
+        'High School', validators=[InputRequired(),
+                                   Length(1, 100)])
+    phone_number = StringField(
+        'Cell Phone Number', validators=[Optional()])
+    graduation_year = IntegerField(
+        'High School Graduation Year', validators=[InputRequired()])
+    unweighted_gpa = FloatField('Unweighted GPA', validators=[InputRequired()])
+    weighted_gpa = FloatField('Weighted GPA', validators=[Optional()])
+    fafsa_status = SelectField(
+        'FAFSA Status',
+        choices=[('Incomplete', 'Incomplete'), ('Submitted', 'Submitted'),
+                 ('In Progress', 'In Progress')])
+    city = StringField('City', validators=[InputRequired(), Length(1, 100)])
+    state = StringField('State', validators=[InputRequired(), Length(1, 100)])
+    note = StringField('Note', validators=[Length(1, 10000)])
+    submit = SubmitField('Update Profile')
+
+    def strip_all(self):
+        raise ValidationError(self.data)
+
 
 class ChangeUserEmailForm(Form):
     email = EmailField(

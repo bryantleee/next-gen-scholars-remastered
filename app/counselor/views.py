@@ -13,7 +13,7 @@ from .forms import (ChangeAccountTypeForm, ChangeUserEmailForm, InviteUserForm,
                     NewSMSAlertForm, EditSMSAlertForm, ParseAwardLetterForm,
                     AddScholarshipProfileForm, EditScholarshipProfileStep1Form,
                     EditScholarshipProfileStep2Form,EditResourceForm, AddResourceForm,
-                    DeleteScholarshipProfileForm)
+                    DeleteScholarshipProfileForm, EditStudentProfile)
 from . import counselor
 from ..decorators import counselor_required
 from ..decorators import admin_required
@@ -45,6 +45,53 @@ app = Flask(__name__)
 def index():
     """Counselor dashboard page."""
     return render_template('counselor/index.html')
+
+@counselor.route(
+    '/profile/edit/<int:student_profile_id>', methods=['GET', 'POST'])
+@login_required
+@counselor_required
+def edit_profile(student_profile_id):
+    # only allows the student or counselors/admins to edit a student's profile
+    if student_profile_id != current_user.student_profile_id and current_user.role_id == 1:
+        abort(404)
+    # Allow user to update basic profile information.
+    student_profile = StudentProfile.query.filter_by(
+        id=student_profile_id).first()
+    if student_profile:
+        form = EditStudentProfile(
+            grade=student_profile.grade,
+            high_school=student_profile.high_school,
+            phone_number=student_profile.phone_number,
+            graduation_year=student_profile.graduation_year,
+            city=student_profile.city,
+            state=student_profile.state,
+            fafsa_status=student_profile.fafsa_status,
+            unweighted_gpa=student_profile.unweighted_gpa,
+            weighted_gpa=student_profile.weighted_gpa,
+            note=student_profile.note)
+        if form.validate_on_submit():
+            # Update user profile information.
+            student_profile.grade = form.grade.data
+            student_profile.high_school = form.high_school.data
+            student_profile.phone_number = form.phone_number.data
+            student_profile.graduation_year = form.graduation_year.data
+            student_profile.city = form.city.data
+            student_profile.state = form.state.data
+            student_profile.fafsa_status = form.fafsa_status.data
+            student_profile.unweighted_gpa = form.unweighted_gpa.data
+            student_profile.weighted_gpa = form.weighted_gpa.data
+            student_profile.note = form.note.data
+            db.session.add(student_profile)
+            db.session.commit()
+            user = User.query.filter_by(
+                student_profile_id=student_profile_id).first()
+            return redirect(url_for(
+                'counselor.view_user_profile', user_id=user.id))
+        return render_template(
+            'counselor/update_profile.html',
+            form=form,
+            student_profile_id=student_profile.id)
+    abort(404)
 
 
 @counselor.route('/scholarships')
