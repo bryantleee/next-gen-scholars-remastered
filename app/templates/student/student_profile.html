@@ -319,8 +319,8 @@
           <th></th>
         </thead>
         <tbody>
-          {% if user.student_profile.recommendation_letters|length > 0 %} 
-          {% for letter in user.student_profile.recommendation_letters|sort(attribute='name') %} 
+          {% if user.student_profile.recommendation_letters|length > 0 %}
+          {% for letter in user.student_profile.recommendation_letters|sort(attribute='name') %}
           {% if letter.status=='Incomplete' %}
           <tr class="centerm negative">
           {% elif letter.status=='Submitted' %}
@@ -342,7 +342,7 @@
             </div>
           </td>
           </tr>
-          {% endfor %} 
+          {% endfor %}
           {% else %}
           <tr class="centerm">
             <td colspan="4">
@@ -369,13 +369,12 @@
   <div class="row">
     <div class="twelve wide column">
       <div style="color: #2AB088;" class="ui horizontal divider">
-        <h3>Acceptances</h3>
+        <h3>Application Status</h3>
       </div>
       <div style="color: #2AB088;" class="ui horizontal divider">Colleges</div>
       <table class="ui compact table">
         <thead class="full-width hide_row_headerm">
           <th>College</th>
-          <th>Cost of Attendance</th>
           <th>Status</th>
           <th></th>
         </thead>
@@ -384,18 +383,15 @@
             user.student_profile.acceptances|sort(attribute='college') %}
             <tr class="centerm">
               <td>{{ acceptance.college }}</td>
-              {% if acceptance.net_cost >= 0 %}
-              <td><a href="/student/acceptance/{{ acceptance.id }}/{{ user.student_profile.id }}">{{ acceptance.net_cost }}</a></td>
-              {% else %}
-              <td>Pending Award Parsing</td>
-              {% endif %}
               <td>{{ acceptance.status }}</td>
               <td class="collapsing">
-                <div class="ui tiny buttons">
+                <div class="ui tiny buttons" style="float: right">
+                  {% if acceptance.link %}
                   <a class="ui basic tiny labeled icon button" href="{{ acceptance.link }}"   target="_blank">
                       <i class="external icon"></i>
                       Award Letter
                     </a>
+                  {% endif %}
                     <a class="ui icon blue basic button"
                       href="/student/profile/acceptance/edit/{{ acceptance.id }}">
                       <i class="edit icon"></i>
@@ -410,7 +406,7 @@
             {% endfor %}{% else %}
             <tr class="centerm">
               <td colspan="4">
-                No acceptances added (yet)!
+                No acceptances added (yet 😉)!
               </td>
             </tr>
             {% endif %}
@@ -420,7 +416,7 @@
             <th colspan="4">
               <a class="ui small green basic labeled icon button" href="{{ url_for
                 ('student.add_acceptance', student_profile_id=user.student_profile.id) }}">
-                <i class="plus icon"></i>Add Acceptance
+                <i class="plus icon"></i>Add Status
               </a>
             </th>
           </tr>

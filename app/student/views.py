@@ -470,7 +470,7 @@ def add_acceptance(student_profile_id):
     return render_template(
         'student/add_academic_info.html',
         form=form,
-        header="Add Acceptance",
+        header="Add College Status",
         student_profile_id=student_profile_id)
 
 
@@ -499,7 +499,7 @@ def edit_acceptance(item_id):
         return render_template(
             'student/edit_academic_info.html',
             form=form,
-            header="Edit Acceptance",
+            header="Edit College Status",
             student_profile_id=acceptance.student_profile_id)
     abort(404)
 

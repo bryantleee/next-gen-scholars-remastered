@@ -355,11 +355,11 @@
   <div class="row">
     <div class="twelve wide column">
       <div style="color: #2AB088;" class="ui horizontal divider">
-        <h3>Acceptances</h3>
+        <h3>Application Status</h3>
       </div>
+      <div style="color: #2AB088;" class="ui horizontal divider">Colleges</div>
       <table class="ui compact table">
-        <thead class="full-width">
-          <th>Cost</th>
+        <thead class="full-width hide_row_headerm">
           <th>College</th>
           <th>Status</th>
           <th></th>
@@ -367,20 +367,17 @@
         <tbody class="full-width">
           {% if user.student_profile.acceptances|length > 0 %} {% for acceptance in
             user.student_profile.acceptances|sort(attribute='college') %}
-            <tr>
-              {% if acceptance.net_cost >= 0 %}
-              <td><a href="/student/acceptance/{{ acceptance.id }}/{{ user.student_profile.id }}">{{ acceptance.net_cost }}</a></td>
-              {% else %}
-              <td>Pending Award Parsing</td>
-              {% endif %}
+            <tr class="centerm">
               <td>{{ acceptance.college }}</td>
               <td>{{ acceptance.status }}</td>
               <td class="collapsing">
-                <div class="ui tiny buttons">
+                <div class="ui tiny buttons" style="float: right">
+                  {% if acceptance.link %}
                   <a class="ui basic tiny labeled icon button" href="{{ acceptance.link }}"   target="_blank">
                       <i class="external icon"></i>
                       Award Letter
                     </a>
+                  {% endif %}
                     <a class="ui icon blue basic button"
                       href="/student/profile/acceptance/edit/{{ acceptance.id }}">
                       <i class="edit icon"></i>
@@ -389,26 +386,23 @@
                     "{{ acceptance.id }}">
                       <i class="x icon"></i>
                   </div>
-                  <a class="ui icon tiny basic button" href="/counselor/parse_award_letter/{{ acceptance.id }}" title="Imput Award Letter Information">
-                    <i class="paste icon"></i>
-                  </a>
                 </div>
               </td>
             </tr>
             {% endfor %}{% else %}
-            <tr>
+            <tr class="centerm">
               <td colspan="4">
-                No acceptances added.
+                No acceptances added (yet 😉)!
               </td>
             </tr>
             {% endif %}
         </tbody>
-        <tfoot class="full-width">
-          <tr>
+        <tfoot class="student_profile_footer_rightd_centerm full-width">
+          <tr class="centerm">
             <th colspan="4">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for
+              <a class="ui small green basic labeled icon button" href="{{ url_for
                 ('student.add_acceptance', student_profile_id=user.student_profile.id) }}">
-                <i class="plus icon"></i>Add Acceptance
+                <i class="plus icon"></i>Add Status
               </a>
             </th>
           </tr>
