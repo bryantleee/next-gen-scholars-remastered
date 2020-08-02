@@ -53,7 +53,35 @@
                         <td class="searchable-td">{{ s.description }}</td>
                         <td class="searchable-td">{{ "${:,.2f}".format(s.award_amount) }}</td>
                         <td class="searchable-td">{{ s.deadline }} </td>
-                        <td class="td-category searchable-td" data-category={{ s.category }}>{{ s.category }} </td>
+                        <td class="td-category searchable-td" data-category={{ s.category }}>{{ s.category }}
+
+                        {% if s.category == "African American" %} ✊🏿 {% endif %}
+                        {% if s.category == "Agriculture" %} 🌱 {% endif %}
+                        {% if s.category == "Arts" %} 🎨 {% endif %}
+                        {% if s.category == "Asian" %} 🌾 {% endif %}
+                        {% if s.category == "Asian Pacific American" %} 🌺 {% endif %}
+                        {% if s.category == "Community Service" %} 🤝 {% endif %}
+                        {% if s.category == "Construction" %} 🏗️ {% endif %}
+                        {% if s.category == "Disability" %} 🐕‍🦺 {% endif %}
+                        {% if s.category == "Engineering" %} 📐 {% endif %}
+                        {% if s.category == "Enviromental" %} 🏡 {% endif %}
+                        {% if s.category == "Female" %} ♀️ {% endif %}
+                        {% if s.category == "Filipino" %} 🇵🇭 {% endif %}
+                        {% if s.category == "First Generation" %} 🎓 {% endif %}
+                        {% if s.category == "Queer" %} 🏳️‍🌈 {% endif %}
+                        {% if s.category == "General" %} 📚 {% endif %}
+                        {% if s.category == "Latinx" %} ✊🏽 {% endif %}
+                        {% if s.category == "Immigrant" %} 🦋 {% endif %}
+                        {% if s.category == "Journalism" %} 🖋️ {% endif %}
+                        {% if s.category == "Japanese" %} 🇯🇵 {% endif %}
+                        {% if s.category == "Jewish" %} ✡️ {% endif %}
+                        {% if s.category == "Indigenous" %} 🌌 {% endif %}
+                        {% if s.category == "Science" %} 🧪 {% endif %}
+                        {% if s.category == "Student Athlete" %} 🏅 {% endif %}
+                        {% if s.category == "Teaching" %} ✏️ {% endif %}
+                        {% if s.category == "Women in Math/Engineering" %} 👩‍💻 {% endif %}
+
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -76,7 +104,7 @@
                     var temp = $('#category-field').dropdown('get value');
                     let category_filter = $('#category-field').dropdown('get value')[temp.length - 1];
 
-                    
+
                     $('.scholarship-row').each(function () {
                         $this = $(this);
                         $this.show();

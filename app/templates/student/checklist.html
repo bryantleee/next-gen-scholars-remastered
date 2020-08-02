@@ -28,8 +28,8 @@
                 </td>
             	<td class="two wide">
                     {% if item.deadline %}
-                        <b {% if today > item.deadline %} style="color:red;" {% endif %}> 
-                            {{  '%s' % (item.deadline.strftime('%m-%d-%Y'))  }} 
+                        <b {% if today > item.deadline %} style="color:red;" {% endif %}>
+                            {{  '%s' % (item.deadline.strftime('%m-%d-%Y'))  }}
                         </b>
                     {% endif %}
                 </td>
@@ -38,7 +38,7 @@
         {% else %}
           <tr>
             <td colspan="4">
-              No tasks.
+              No tasks 😁
             </td>
           </tr>
           {% endif %}
@@ -84,7 +84,7 @@
 <div class="ui stackable centered grid container" style="margin-top:12px; margin-bottom:64px">
     <div class="twelve wide computer sixteen wide mobile column">
         <h2 class="ui dividing header">
-            Tasks
+            Tasks 📝
             <div class="sub header">Keep track of your tasks and deadlines</div>
         </h2>
         {% if notifications %}

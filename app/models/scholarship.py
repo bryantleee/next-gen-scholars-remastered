@@ -25,15 +25,16 @@ class Scholarship(db.Model):
 
     @validates('category')
     def validate_category(self, key, category):
-        assert category in [
-            'African-American', 'Agriculture', 'Arts-related','Asian','Asian Pacific American',
-            'Community Service','Construction Related Fields','Disabled','Engineering',
-            'Environmental Interest','Female','Filipino','First Generation College Student',
-            'Queer','General','Latinx','Immigrant/AB540/DACA','Interest in Journalism',
-            'Japanese','Jewish','Indigenous','Open to All Grade Levels','Science/Engineering',
-            'Student-Athlete','Teaching','Women in Math/Engineering'
-        ]
-        return category
+        # They can only select from a dropdown anyways, so this should be redudant
+        if category in [
+            "African American","Agriculture","Arts","Asian","Asian Pacific American","Community Service",
+                    "Construction","Disability","Engineering","Environmental","Female","Filipino","First Generation",
+                    "Queer","General","Latinx","Immigrant","Journalism","Japanese","Jewish","Indigenous","Science",
+                    "Student Athlete","Teaching","Women in Math/Engineering"
+        ]:
+            return category
+        else:
+            return "General"
 
     @staticmethod
     def insert_scholarships():
@@ -42,12 +43,10 @@ class Scholarship(db.Model):
             'Oldham Scholarship', 'Boatwright Scholarship', 'Bonner Scholarship',
         }
         category = [
-            'African-American', 'Agriculture', 'Arts-related','Asian','Asian Pacific American',
-            'Community Service','Construction Related Fields','Disabled','Engineering',
-            'Environmental Interest','Female','Filipino','First Generation College Student',
-            'Queer','General','Latinx','Immigrant/AB540/DACA','Interest in Journalism',
-            'Japanese','Jewish','Indigenous','Open to All Grade Levels','Science/Engineering',
-            'Student-Athlete','Teaching','Women in Math/Engineering'
+            "African American","Agriculture","Arts","Asian","Asian Pacific American","Community Service",
+                    "Construction","Disability","Engineering","Environmental","Female","Filipino","First Generation",
+                    "Queer","General","Latinx","Immigrant","Journalism","Japanese","Jewish","Indigenous","Science",
+                    "Student Athlete","Teaching","Women in Math/Engineering"
         ]
 
         deadline = [
@@ -99,7 +98,7 @@ class Scholarship(db.Model):
                     link = random.choice(link))
                 db.session.add(scholarship)
             db.session.commit()
-        
+
 
         # return scholarships
     def __repr__(self):

@@ -325,7 +325,33 @@ class AddScholarshipProfileForm(Form):
         format='%Y-%m-%d',
         validators=[Optional()])
     award_amount = FloatField('Award Amount', validators=[InputRequired()])
-    category = StringField('Category of Scholarship (If none, put General)', validators=[Optional()])
+    category = SelectField('Category of Scholarship (If none, put General)',
+               choices=[("General","General"),
+                       ("African-American","African-American"),
+                       ("Agriculture","Agriculture"),
+                       ("Arts","Arts"),
+                       ("Asian","Asian"),
+                       ("Asian Pacific American","Asian Pacific American"),
+                       ("Community Service","Community Service"),
+                       ("Construction","Construction"),
+                       ("Disability","Disability"),
+                       ("Engineering","Engineering"),
+                       ("Environmental","Environmental"),
+                       ("Female","Female"),
+                       ("Filipino","Filipino"),
+                       ("First Generation","First Generation"),
+                       ("Queer","Queer"),
+                       ("Latinx","Latinx"),
+                       ("Immigrant","Immigrant"),
+                       ("Journalism","Journalism"),
+                       ("Japanese","Japanese"),
+                       ("Jewish","Jewish"),
+                       ("Indigenous","Indigenous"),
+                       ("Science","Science"),
+                       ("Student Athlete","Student Athlete"),
+                       ("Teaching","Teaching"),
+                       ("Women in Math/Engineering","Women in Math/Engineering")],
+               validators=[Optional()])
     merit_based = BooleanField('Merit Based')
     service_based = BooleanField('Service Based')
     need_based = BooleanField('Need Based')
@@ -355,7 +381,33 @@ class EditScholarshipProfileStep2Form(Form):
         format='%Y-%m-%d',
         validators=[Optional()])
     award_amount = FloatField('Award Amount', validators=[InputRequired()])
-    category = StringField('Category of Scholarship (If none, put General)', validators=[Optional()])
+    category = SelectField('Category of Scholarship (If none, put General)',
+               choices=[("General","General"),
+                       ("African American","African American"),
+                       ("Agriculture","Agriculture"),
+                       ("Arts","Arts"),
+                       ("Asian","Asian"),
+                       ("Asian Pacific American","Asian Pacific American"),
+                       ("Community Service","Community Service"),
+                       ("Construction","Construction"),
+                       ("Disability","Disability"),
+                       ("Engineering","Engineering"),
+                       ("Environmental","Environmental"),
+                       ("Female","Female"),
+                       ("Filipino","Filipino"),
+                       ("First Generation","First Generation"),
+                       ("Queer","Queer"),
+                       ("Latinx","Latinx"),
+                       ("Immigrant","Immigrant"),
+                       ("Journalism","Journalism"),
+                       ("Japanese","Japanese"),
+                       ("Jewish","Jewish"),
+                       ("Indigenous","Indigenous"),
+                       ("Science","Science"),
+                       ("Student Athlete","Student Athlete"),
+                       ("Teaching","Teaching"),
+                       ("Women in Math/Engineering","Women in Math/Engineering")],
+               validators=[Optional()])
     merit_based = BooleanField('Merit Based')
     service_based = BooleanField('Service Based')
     need_based = BooleanField('Need Based')
