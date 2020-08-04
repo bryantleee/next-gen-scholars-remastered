@@ -19,28 +19,23 @@
             <ol>
                <li>Student Name</li>
                <li>College <span style="color:red">(make sure this matches the name of in the "Colleges" tab EXACTLY)</span> </li>
-               <li>Application status</li>
+               <li>ED_status</li>
                <li>GPA</li>
-               <li>SAT Score [2400]</li>
-               <li>SAT Score [1600]</li>
-               <li>ACT Score</li>
+               <li>SAT 2400</li>
+               <li>SAT 1600</li>
+               <li>ACT</li>
+               <li>Financial Aid Met % (a rough estimate)</li>
+               <li>High School</li>
             </ol>
+            <span style="color:red"> Note this only reflects which college students were accepted to and does not track rejections, waitlists, ect. </span>
          </p>
 
          <p>
-            <img src="{{url_for('static',filename='images/app_statuses.png')}}" width="100%" />
+            <img src="{{url_for('static',filename='images/scattergram_data.png')}}" width="100%" />
          </p>
          <p>
-            For the "Application Status" column, possible entries are:
-            <ul>
-               <li>Accepted</li>
-               <li>Denied</li>
-               <li>Waitlisted/Deferred (Withdrew App)</li>
-               <li>Waitlisted/Deferred (Accepted)</li>
-               <li>Waitlisted/Deferred (Denied)</li>
-            </ul>
-            Double check your spelling – if a student's college or application status is misspelled, their data will not be included in the scattergram.
-            When you are finished entering all the data, download your excel sheet as a CSV file, then upload it to this portal and click "Submit."
+            Double check your spelling – if a student's college or ed/rd status is misspelled, their data will not be included in the scattergram.
+            When you are finished entering all the data, download your spread sheet as a CSV file, then upload it to this portal and click "Submit."
          </p>
          <h4 class="ui header">Upload CSV File</h4>
          {% if message %}
