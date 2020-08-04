@@ -2,17 +2,39 @@
 
 {% block content %}
 
-<div class="container" style="padding-bottom:50px; text-align: center; background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('{{ college.image }}'); background-size: cover;">
-    <h1 style="font-size:4.5em; color:white; text-align:center; padding-top:100px; padding-bottom:30px; font-family: 'IBM Plex Serif', serif;">{{ college.name }}
+
+{% if college.school_color1 and college.school_color1 != 'FFFFFF' %}
+<div class="container" style="padding-bottom:40px; text-align: center; background-color: #{{ college.school_color1 or 'A6A6A6' }}; background-size: cover;">
+{% else %}
+<div class="container" style="padding-bottom:40px; text-align: center; background-color:#A6A6A6; background-size: cover;">
+{% endif %}
+
+
+    <h1 style="font-size:4.5em; color:white; text-align:center; padding-top:40px; padding-bottom:0px; font-family: 'IBM Plex Serif', serif;">{{ college.name }}
     <!-- Fun easter eggy stuff -->
     {% if college.name == "Tufts University" %} 🐘 {% endif %}
     {% if college.name == "Cornell University" %} 🌽 {% endif %}
     {% if college.name == "Stanford University" %} 🌲 {% endif %}
     {% if college.name == "University of Richmond" %} 🕷 {% endif %}️
     {% if college.name == "University of Pennsylvania" %} 🖋️ {% endif %}️
-    {% if college.name == "Brown University" %} 🐻 {% endif %}️
+    {% if college.name == "Brown University" %}🐻{% endif %}️
     </h1>
 </div>
+
+{% if college.school_color2 and college.school_color2 != 'FFFFFF' %}
+<div style="padding-top:10px; text-align: center; background-color: #{{ college.school_color2 }}; background-size: cover;">
+</div>
+{% endif %}
+
+{% if college.school_color3 and college.school_color3 != 'FFFFFF' %}
+<div style="padding-top:10px; text-align: center; background-color: #{{ college.school_color3 }}; background-size: cover;">
+</div>
+{% endif %}
+
+{% if college.school_color4 and college.school_color4 != 'FFFFFF' %}
+<div style="padding-top:10px; text-align: center; background-color: #{{ college.school_color4 }}; background-size: cover;">
+</div>
+{% endif %}
 
 {% macro create_medium_stat_box(stat, description, extra_classes=none )%}
     <div class="ui segment stat_box {{extra_classes}}" >
