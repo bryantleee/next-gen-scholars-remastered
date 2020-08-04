@@ -34,7 +34,7 @@ def validate_scattergram_csv(content, valid_students, valid_colleges):
         'We detected {} column{} in this CSV. Make sure there are only 9 columns, as shown exactly in the picture.'\
             .format(df.shape[1], 's' if df.shape[1] != 1 else '')
     # error_list = [] #TODO: Implement me (need to deal with bad types if implemented)
-    valid_ed_statuses = ('ED', 'RD')
+    valid_ed_statuses = ('ED', 'RD', 'UNK')
 
     #validate each point as a proper data type
     data_validation = {
@@ -90,13 +90,13 @@ def validate_scattergram_csv(content, valid_students, valid_colleges):
                     return False, error_message
 
     return True, df
-    
+
 
 def parse_dates(column_of_strings):
     '''
-    Parses dates for a list/column of strings. Returns a list of dt objects 
+    Parses dates for a list/column of strings. Returns a list of dt objects
     Will return None if it cannot parse a date
-    
+
     this will allow more fluid types of date inputs rather than using pd.to_datetime
     '''
     dt_objects = []
@@ -105,14 +105,14 @@ def parse_dates(column_of_strings):
             dt_objects.append(parser.parse(date))
         except (ValueError, TypeError):
             # Unable to parse date from string or if is value is not a string
-            dt_objects.append(None) 
+            dt_objects.append(None)
     return dt_objects
-    
+
 
 def validate_college_csv(content):
     '''
     Validates college upload CSV.
-    
+
     content: IO stream of a CSV file
     '''
     # Try to transform into dataframe
@@ -120,35 +120,37 @@ def validate_college_csv(content):
         df = pd.read_csv(content)
     except:
         return False, 'There is a fatal CSV formatting error. Please redownload the CSV and try again.'
-    
-    df_columns = ('College','Description', 'Unweighted GPA', 
-               'Regular Deadline (RD)', 'Early Deadline (ED)', 
-               'Scholarship Deadline', 'FAFSA Deadline', 
+
+    df_columns = ('College','Description', 'Unweighted GPA',
+               'Regular Deadline (RD)', 'Early Deadline (ED)',
+               'Scholarship Deadline', 'FAFSA Deadline',
                'Acceptance Announcement Date')
-    
+
     date_cols = ('Regular Deadline (RD)', 'Early Deadline (ED)', 'Scholarship Deadline', 'FAFSA Deadline')
-    
+
     # make sure there are the right amount of columns
     if df.shape[1] != 8:
         return False, \
             'There are {} columns. Please make sure that there are 8 columns, as show exactly in the picture.'.format(df.shape[1])
-    
+
     df.columns = df_columns
-    
+
     # Turn dates into DT Objects
     for date_col in date_cols:
         df[date_col] = parse_dates(df[date_col])
-    
+
     # Validate if GPA data
     for unweighted_gpa in df['Unweighted GPA']:
+        if unweighted_gpa == '' or isnan(unweighted_gpa):
+            continue
         try:
             float(unweighted_gpa)
         except ValueError:
             return False, \
                 'GPA Value type is not correct. Make sure all numbers in the column are numbers with decimals.'
-        
+
         if not 0 <= unweighted_gpa <= 5:
             return False, \
                 '{} is not a valid GPA value.'.format(unweighted_gpa)
-        
+
     return True, df

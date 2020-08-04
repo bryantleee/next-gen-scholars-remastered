@@ -3,7 +3,17 @@
 {% block content %}
 
 <div class="container" style="padding-bottom:50px; text-align: center; background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('{{ college.image }}'); background-size: cover;">
-    <h1 class="college_name_large">{{ college.name }}</h1>
+    
+  <h1>{{ college.name }}
+    <!-- Fun easter eggy stuff -->
+    {% if college.name == "Tufts University" %} 🐘 {% endif %}
+    {% if college.name == "Cornell University" %} 🌽 {% endif %}
+    {% if college.name == "Stanford University" %} 🌲 {% endif %}
+    {% if college.name == "University of Richmond" %} 🕷 {% endif %}️
+    {% if college.name == "University of Pennsylvania" %} 🖋️ {% endif %}️
+    {% if college.name == "Brown University" %} 🐻 {% endif %}️
+  </h1>
+
 </div>
 
 {% macro create_medium_stat_box(stat, description, extra_classes=none )%}
@@ -230,7 +240,7 @@
 
                 </div>
         </div>
-        
+
         {% if college.early_deadline or college.regular_deadline or college.scholarship_deadline or college.fafsa_deadline or college.acceptance_deadline %}
         <div class="ui raised secondary green segment college_info">
                 <h1 class="ui header college_info_section_header">Deadlines</h1>
@@ -260,17 +270,21 @@
         <script>
 
             let chart_data0 = {"Rd": [],    // Regular accepted
-                               "Ed": []}    // Early accepted
+                               "Ed": [],    // Early accepted
+                               "Unk": []}   // Unknown
 
-           let chart_data1 = {"Rd": [],     // Regular accepted
-                              "Ed": []}     // Early accepted
+           let chart_data1 = {"Rd": [],    // Regular accepted
+                              "Ed": [],    // Early accepted
+                              "Unk": []}   // Unknown
 
-          let chart_data2 = {"Rd": [],      // Regular accepted
-                             "Ed": []}      // Early accepted
+          let chart_data2 = {"Rd": [],    // Regular accepted
+                             "Ed": [],    // Early accepted
+                             "Unk": []}   // Unknown
 
 
           let ed_sizes = []
           let rd_sizes = []
+          let unk_sizes = []
           let datapoint_added;
 
             {% for d in scatter_data %}
@@ -298,10 +312,13 @@
 
                 if (datapoint_added) {
                     if ("{{d.ed_status}}" == "Ed") {
-                        ed_sizes.push({{d.fin_aid_perc}} * 12)
+                        ed_sizes.push({{d.fin_aid_perc}} * 10 + 5)
                     }
                     if ("{{d.ed_status}}" == "Rd") {
-                        rd_sizes.push({{d.fin_aid_perc}} * 12)
+                        rd_sizes.push({{d.fin_aid_perc}} * 10 + 5)
+                    }
+                    if ("{{d.ed_status}}" == "Unk") {
+                        unk_sizes.push({{d.fin_aid_perc}} * 10 + 5)
                     }
                 }
 
@@ -315,7 +332,7 @@
                         {
                             label: 'RD - Accepted',
                             pointRadius: rd_sizes,
-                            pointHoverRadius: 12,
+                            pointHoverRadius: 16,
                             backgroundColor: '#68FF33',
                             data: chart_data["Rd"]
                         },
@@ -323,10 +340,18 @@
                         {
                             label: 'ED - Accepted',
                             pointRadius: ed_sizes,
-                            pointHoverRadius: 12,
+                            pointHoverRadius: 16,
                             pointStyle: 'rect',
-                            backgroundColor: '#68FF33',
+                            backgroundColor: '#33FFFC',
                             data: chart_data["Ed"]
+                        },
+
+                        {
+                            label: 'UNK - Accepted',
+                            pointRadius: unk_sizes,
+                            pointHoverRadius: 16,
+                            backgroundColor: '#ADADAD',
+                            data: chart_data["Unk"]
                         },
 
                         {
@@ -362,14 +387,16 @@
                         title: {
                             display: true,
                             position: 'top',
-                            text: [chart_name, "note: % financial aid is represented by point size"],
-                            fontSize: 14
+                            text: [chart_name],
+                            fontSize: 20,
+                            fontColor: '#000000'
                         },
                         legend: {
                             display: true,
                             labels: {
                                 filter: function(legendItem, data) {
-                                    if (['Your GPA/SAT', 'RD - Accepted','ED - Accepted', 'ED - Waitlisted']
+                                    if (['Your GPA/SAT', 'RD - Accepted',
+                                         'ED - Accepted', 'UNK - Accepted']
                                         .includes(legendItem.text)) {
                                         return true
                                     } else {
@@ -411,8 +438,8 @@
             let chartElem1 = document.getElementById('chart1').getContext('2d');
             let chartElem2 = document.getElementById('chart2').getContext('2d');
 
-            var chart0 = newSC(chartElem0, chart_data0, 4, 1600, {{ user_gpa }}, {{ user_sat }}, "GPA vs SAT2400")
-            var chart1 = newSC(chartElem1, chart_data1, 4, 2400, {{ user_gpa }}, {{ user_sat }}, "GPA vs SAT1600")
+            var chart0 = newSC(chartElem0, chart_data0, 4, 1600, {{ user_gpa }}, {{ user_sat }}, "GPA vs SAT1600")
+            var chart1 = newSC(chartElem1, chart_data1, 4, 2400, {{ user_gpa }}, {{ user_sat }}, "GPA vs SAT2400")
             var chart2 = newSC(chartElem2, chart_data2, 4, 36, {{ user_gpa }}, {{ user_act }}, "GPA vs ACT")
 
         </script>

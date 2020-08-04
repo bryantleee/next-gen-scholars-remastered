@@ -13,14 +13,14 @@ from .forms import (ChangeAccountTypeForm, ChangeUserEmailForm, InviteUserForm,
                     NewSMSAlertForm, EditSMSAlertForm, ParseAwardLetterForm,
                     AddScholarshipProfileForm, EditScholarshipProfileStep1Form,
                     EditScholarshipProfileStep2Form,EditResourceForm, AddResourceForm,
-                    DeleteScholarshipProfileForm)
+                    DeleteScholarshipProfileForm, EditStudentProfile)
 from . import counselor
 from ..decorators import counselor_required
 from ..decorators import admin_required
 from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
-                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
+                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input,
                       get_colors, Resource, validate_csvs, extract_url_or_name)
 
 import google.oauth2.credentials
@@ -46,6 +46,53 @@ def index():
     """Counselor dashboard page."""
     return render_template('counselor/index.html')
 
+@counselor.route(
+    '/profile/edit/<int:student_profile_id>', methods=['GET', 'POST'])
+@login_required
+@counselor_required
+def edit_profile(student_profile_id):
+    # only allows the student or counselors/admins to edit a student's profile
+    if student_profile_id != current_user.student_profile_id and current_user.role_id == 1:
+        abort(404)
+    # Allow user to update basic profile information.
+    student_profile = StudentProfile.query.filter_by(
+        id=student_profile_id).first()
+    if student_profile:
+        form = EditStudentProfile(
+            grade=student_profile.grade,
+            high_school=student_profile.high_school,
+            phone_number=student_profile.phone_number,
+            graduation_year=student_profile.graduation_year,
+            city=student_profile.city,
+            state=student_profile.state,
+            fafsa_status=student_profile.fafsa_status,
+            unweighted_gpa=student_profile.unweighted_gpa,
+            weighted_gpa=student_profile.weighted_gpa,
+            note=student_profile.note)
+        if form.validate_on_submit():
+            # Update user profile information.
+            student_profile.grade = form.grade.data
+            student_profile.high_school = form.high_school.data
+            student_profile.phone_number = form.phone_number.data
+            student_profile.graduation_year = form.graduation_year.data
+            student_profile.city = form.city.data
+            student_profile.state = form.state.data
+            student_profile.fafsa_status = form.fafsa_status.data
+            student_profile.unweighted_gpa = form.unweighted_gpa.data
+            student_profile.weighted_gpa = form.weighted_gpa.data
+            student_profile.note = form.note.data
+            db.session.add(student_profile)
+            db.session.commit()
+            user = User.query.filter_by(
+                student_profile_id=student_profile_id).first()
+            return redirect(url_for(
+                'counselor.view_user_profile', user_id=user.id))
+        return render_template(
+            'counselor/update_profile.html',
+            form=form,
+            student_profile_id=student_profile.id)
+    abort(404)
+
 
 @counselor.route('/scholarships')
 @login_required
@@ -53,10 +100,10 @@ def index():
 def scholarships():
     """View all scholarships"""
     scholarships = Scholarship.query.all()
-    category_list = ["African-American","Agriculture","Arts-related","Asian","Asian Pacific American","Community Service",
-            "Construction Related Fields","Disabled","Engineering","Environmental Interest","Female","Filipino","First Generation College Student",
-            "Queer","General","Latinx","Immigrant/AB540/DACA","Interest in Journalism","Japanese","Jewish","Indigenous","Science/Engineering",
-            "Student-Athlete","Teaching","Women in Math/Engineering"]
+    category_list = ["African American","Agriculture","Arts","Asian","Asian Pacific American","Community Service",
+            "Construction","Disability","Engineering","Environmental","Female","Filipino","First Generation",
+            "Queer","General","Latinx","Immigrant","Journalism","Japanese","Jewish","Indigenous","Science",
+            "Student Athlete","Teaching","Women in Math/Engineering"]
     return render_template('counselor/scholarships.html', scholarships=scholarships, category_list=category_list)
 
 @csrf.exempt
@@ -102,7 +149,7 @@ def upload_scholarship_file():
 def colleges():
     """View all colleges."""
     colleges = College.query.all()
-    has_errors = College.query.filter(College.scorecard_id == None).first() 
+    has_errors = College.query.filter(College.scorecard_id == None).first()
     return render_template('counselor/colleges.html', colleges=colleges, has_errors=has_errors)
 
 
@@ -116,9 +163,9 @@ def upload_college_file():
         f = request.files['file']
         stream = io.StringIO(f.stream.read().decode("utf-8"))
         success, df = validate_csvs.validate_college_csv(stream)
-        
+
         if not success:
-            message, message_type = df, 'negative'
+            message, message_type = str(df), 'negative'
         else:
             message, message_type = 'Upload successful!', 'positive'
             for row in df.iterrows():
@@ -158,8 +205,8 @@ def upload_college_file():
                 College.retrieve_college_info(college)
                 db.session.add(college)
             db.session.commit()
-        return redirect(url_for('counselor.colleges'))
-    return render_template('counselor/upload_colleges.html')
+        return render_template('counselor/upload_colleges.html', message=message, message_type=message_type)
+    return render_template('counselor/upload_colleges.html', message=None, message_type=None)
 
 
 @counselor.route('/new-user', methods=['GET', 'POST'])
@@ -755,6 +802,7 @@ def upload_scattergram():
             message, message_type = df, 'negative'
         else:
             message, message_type = 'Upload successful!', 'positive'
+            db.session.query(ScattergramData).delete() # Delete previous data
             for row in df.iterrows():
                 point = ScattergramData(
                     name=row[1]['student name'],
