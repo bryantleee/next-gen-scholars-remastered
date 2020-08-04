@@ -3,17 +3,7 @@
 {% block content %}
 
 <div class="container" style="padding-bottom:50px; text-align: center; background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('{{ college.image }}'); background-size: cover;">
-    
-  <h1 class="college_name_large">{{ college.name }}
-    <!-- Fun easter eggy stuff -->
-    {% if college.name == "Tufts University" %} 🐘 {% endif %}
-    {% if college.name == "Cornell University" %} 🌽 {% endif %}
-    {% if college.name == "Stanford University" %} 🌲 {% endif %}
-    {% if college.name == "University of Richmond" %} 🕷 {% endif %}️
-    {% if college.name == "University of Pennsylvania" %} 🖋️ {% endif %}️
-    {% if college.name == "Brown University" %} 🐻 {% endif %}️
-  </h1>
-
+  <h1 class="college_name_large">{{ funner_college_name }}</h1>
 </div>
 
 {% macro create_medium_stat_box(stat, description, extra_classes=none )%}

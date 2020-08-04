@@ -17,7 +17,7 @@ from .forms import (
 from ..models import (User, College, Essay, TestScore, ChecklistItem,
                       RecommendationLetter, TestName, Notification,
                       Acceptance, Scholarship, get_state_name_from_abbreviation,
-                      get_colors, fix_url)
+                      get_colors, fix_url, get_easter_egg_emoji)
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
@@ -1176,20 +1176,21 @@ def view_college_profile(college_id):
     user_act = 0
 
     if current_user.student_profile:
-
         user_gpa = max(user_gpa, current_user.student_profile.unweighted_gpa)
-
         for test in current_user.student_profile.test_scores:
             if test.name == 'SAT':
                 user_sat = max(user_sat, test.score)
             if test.name == 'ACT':
                 user_act = max(user_act, test.score)
-
+    
+    easter_egg_emoji = get_easter_egg_emoji(college.name)
+    funner_college_name = '{} {}'.format(college.name, easter_egg_emoji) if easter_egg_emoji else college.name
+        
     return render_template(
         'main/college_profile.html', website_url=website_url,
         net_cost_url=net_cost_url, pageType='college_profile',
         college=college, state_full_name=state_full_name,
-        scatter_data=scatter_data, user_gpa=user_gpa,
+        scatter_data=scatter_data, funner_college_name=funner_college_name, user_gpa=user_gpa,
         user_sat=user_sat, user_act=user_act)
 
 @student.route('/scholarship_profile/<int:scholarship_id>')

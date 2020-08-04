@@ -146,3 +146,20 @@ def extract_url_or_name(form_input):
 
 def get_colors():
     return ('red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink')
+
+
+def get_easter_egg_emoji(college_name):
+    '''
+    college_name: string
+        gets emoji for a college, given a college name
+        returns string with emoji
+    '''
+    easter_eggs = {
+        'Tufts University' : '🐘',
+        'Cornell University' : '🌽',
+        'Stanford University' : '🌲',
+        'University of Richmond' : '🕷',
+        'University of Pennsylvania' : '🖋️',
+        'Brown University' : '🐻'
+    }
+    return easter_eggs.get(college_name)
