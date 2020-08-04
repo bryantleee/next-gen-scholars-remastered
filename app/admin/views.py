@@ -32,7 +32,8 @@ def new_user():
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             email=form.email.data,
-            password=form.password.data)
+            password=form.password.data,
+            confirmed=True)
         if user.role.id == 1:
             user.student_profile=StudentProfile()
         db.session.add(user)
@@ -133,7 +134,7 @@ def change_user_password(user_id):
         db.session.commit()
         flash('{}\'s password has been updated.'.format(user.first_name), 'form-success')
         return render_template('admin/manage_user.html', user=user, form=form)
-        
+
     return render_template('admin/manage_user.html', user=user, form=form)
 
 
