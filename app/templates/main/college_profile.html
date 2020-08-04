@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container" style="padding-bottom:50px; text-align: center; background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('{{ college.image }}'); background-size: cover;">
-    <h1 style="font-size:4.5em; color:white; text-align:center; padding-top:100px; padding-bottom:30px; font-family: 'IBM Plex Serif', serif;">{{ college.name }}</h1>
+    <h1 class="college_name_large">{{ college.name }}</h1>
 </div>
 
 {% macro create_medium_stat_box(stat, description, extra_classes=none )%}
@@ -67,11 +67,12 @@
 
             <div class="ui three column doubling stackable grid stretched flex_wrapper card_container">
                 {% if college.admission_rate is not none %}
-
                 <div class="column">
                     <div class="ui segment" style="text-align: center;">
-                        <h2 class="big_stat_title"> {{ college.admission_rate }}% </h1>
-                        <h3 class="big_stat_subtitle"> Acceptance Rate </h2>
+                        <div class="admission_rate">
+                            <h2 class="big_stat_title"> {{ college.admission_rate }}% </h1>
+                            <h3 class="big_stat_subtitle"> Acceptance Rate </h2>
+                        </div>
                         {% if college.admission_rate < 30.0 %}
                         <em>&emsp; Note: Don't be deterred by an acceptance rate if the rest of your profile fits the school!</em>
                         {% endif %}

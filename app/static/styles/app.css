@@ -257,6 +257,15 @@ table.selectable tr:hover {
   margin: auto !important;
 }
 
+.college_name_large{
+  font-size:4.5em; 
+  color:white; 
+  text-align:center; 
+  padding-top:100px; 
+  padding-bottom:30px; 
+  font-family: 'IBM Plex Serif', serif;
+}
+
 @media only screen and (max-width: 1200px) {
   .medium_stat_title {
     font-size: 25px;
@@ -289,6 +298,9 @@ table.selectable tr:hover {
   .centerm{
     text-align: center;
     font-size: 16px;
+  }
+  .college_name_large{
+    font-size: 3em; 
   }
 }
 
