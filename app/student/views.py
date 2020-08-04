@@ -470,7 +470,7 @@ def add_acceptance(student_profile_id):
     return render_template(
         'student/add_academic_info.html',
         form=form,
-        header="Add Acceptance",
+        header="Add College Status",
         student_profile_id=student_profile_id)
 
 
@@ -499,7 +499,7 @@ def edit_acceptance(item_id):
         return render_template(
             'student/edit_academic_info.html',
             form=form,
-            header="Edit Acceptance",
+            header="Edit College Status",
             student_profile_id=acceptance.student_profile_id)
     abort(404)
 
@@ -605,10 +605,10 @@ def delete_college(item_id, student_profile_id):
 def scholarships():
     """View all scholarships"""
     scholarships = Scholarship.query.all()
-    category_list = ["African-American","Agriculture","Arts-related","Asian","Asian Pacific American","Community Service",
-            "Construction Related Fields","Disabled","Engineering","Environmental Interest","Female","Filipino","First Generation College Student",
-            "Queer","General","Latinx","Immigrant/AB540/DACA","Interest in Journalism","Japanese","Jewish","Indigenous","Science/Engineering",
-            "Student-Athlete","Teaching","Women in Math/Engineering"]
+    category_list = ["African American","Agriculture","Arts","Asian","Asian Pacific American","Community Service",
+            "Construction","Disability","Engineering","Environmental","Female","Filipino","First Generation",
+            "Queer","General","Latinx","Immigrant","Journalism","Japanese","Jewish","Indigenous","Science",
+            "Student Athlete","Teaching","Women in Math/Engineering"]
     return render_template('student/scholarships.html', scholarships=scholarships, category_list=category_list)
 
 

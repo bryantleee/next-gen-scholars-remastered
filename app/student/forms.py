@@ -264,38 +264,29 @@ class AddMajorForm(Form):
 
 
 class AddAcceptanceForm(Form):
-    link = StringField('Award Letter Link', validators=[InputRequired(), Length(1, 100)])
     college = QuerySelectField(
         'College Name',
         validators=[InputRequired()],
         get_label='name',
         query_factory=lambda: db.session.query(College).order_by('name'))
-    status = SelectField(
+    status = StringField(
         'Status',
-        choices=[('Accepted', 'Accepted'),('Accepted with award letter',
-                  'Accepted with award letter'), ('Pending Award Letter Parsing',
-                   'Pending Award Letter Parsing')],
-        validators=[InputRequired()])
-    submit = SubmitField('Add Acceptance')
+        validators=[InputRequired(), Length(1, 100)])
+    link = StringField('Award Letter Link (if accepted)')
+    submit = SubmitField('Add College Status')
 
 
 class EditAcceptanceForm(Form):
-    link = StringField(
-        'Award Letter Link', validators=[InputRequired(),
-                                         Length(1, 100)])
     college = QuerySelectField(
         'College Name',
         validators=[InputRequired()],
         get_label='name',
         query_factory=lambda: db.session.query(College).order_by('name'))
-    status = SelectField(
+    status = StringField(
         'Status',
-        choices=[('Accepted', 'Accepted'),
-                 ('Accepted with award letter',
-                  'Accepted with award letter'), ('Pending Award Letter Parsing',
-                  'Pending Award Letter Parsing')],
-        validators=[InputRequired()])
-    submit = SubmitField('Update Acceptance')
+        validators=[InputRequired(), Length(1, 100)])
+    link = StringField('Award Letter Link (if accepted)')
+    submit = SubmitField('Edit College Status')
 
 
 class AddStudentScholarshipForm(Form):

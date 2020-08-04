@@ -12,6 +12,32 @@ from wtforms.validators import Email, EqualTo, InputRequired, Length, Optional
 from .. import db
 from ..models import Role, User, TestName, College, Scholarship
 
+class EditStudentProfile(Form):
+    grade = SelectField(
+        'Grade',
+        choices=[('9', '9th Grade'), ('10', '10th Grade'),
+                 ('11', '11th Grade'), ('12', '12th Grade')])
+    high_school = StringField(
+        'High School', validators=[InputRequired(),
+                                   Length(1, 100)])
+    phone_number = StringField(
+        'Cell Phone Number', validators=[Optional()])
+    graduation_year = IntegerField(
+        'High School Graduation Year', validators=[InputRequired()])
+    unweighted_gpa = FloatField('Unweighted GPA', validators=[InputRequired()])
+    weighted_gpa = FloatField('Weighted GPA', validators=[Optional()])
+    fafsa_status = SelectField(
+        'FAFSA Status',
+        choices=[('Incomplete', 'Incomplete'), ('Submitted', 'Submitted'),
+                 ('In Progress', 'In Progress')])
+    city = StringField('City', validators=[InputRequired(), Length(1, 100)])
+    state = StringField('State', validators=[InputRequired(), Length(1, 100)])
+    note = StringField('Note', validators=[Length(1, 10000)])
+    submit = SubmitField('Update Profile')
+
+    def strip_all(self):
+        raise ValidationError(self.data)
+
 
 class ChangeUserEmailForm(Form):
     email = EmailField(
@@ -151,7 +177,7 @@ class DeleteTestNameForm(Form):
 
 class AddCollegeProfileForm(Form):
     name = StringField(
-        'College/University Name',
+        'College/University Name OR College Scorecard URL (use the College Scorecard URL it consistently gives you an error)',
         validators=[InputRequired(), Length(1, 200)])
     description = StringField(u'Description',
         validators=[Optional()],
@@ -235,7 +261,7 @@ class EditResourceForm(Form):
 
 class EditCollegeProfileStep2Form(Form):
     name = StringField(
-        'College/University Name',
+        'College/University Name OR College Scorecard URL (use the College Scorecard URL it consistently gives you an error)',
         validators=[InputRequired(), Length(1, 200)])
     # Input not required for either deadline.
     description = StringField(
@@ -261,9 +287,8 @@ class EditCollegeProfileStep2Form(Form):
         'Fafsa Deadline (mm-dd-yyyy)',
         format='%Y-%m-%d',
         validators=[Optional()])
-    acceptance_deadline = DateField(
-        'Acceptance Deadline (mm-dd-yyyy)',
-        format='%Y-%m-%d',
+    acceptance_deadline = StringField(
+        'Acceptance Deadline (any format)',
         validators=[Optional()])
     submit = SubmitField('Save College Profile')
 
@@ -300,7 +325,33 @@ class AddScholarshipProfileForm(Form):
         format='%Y-%m-%d',
         validators=[Optional()])
     award_amount = FloatField('Award Amount', validators=[InputRequired()])
-    category = StringField('Category of Scholarship (If none, put General)', validators=[Optional()])
+    category = SelectField('Category of Scholarship (If none, put General)',
+               choices=[("General","General"),
+                       ("African-American","African-American"),
+                       ("Agriculture","Agriculture"),
+                       ("Arts","Arts"),
+                       ("Asian","Asian"),
+                       ("Asian Pacific American","Asian Pacific American"),
+                       ("Community Service","Community Service"),
+                       ("Construction","Construction"),
+                       ("Disability","Disability"),
+                       ("Engineering","Engineering"),
+                       ("Environmental","Environmental"),
+                       ("Female","Female"),
+                       ("Filipino","Filipino"),
+                       ("First Generation","First Generation"),
+                       ("Queer","Queer"),
+                       ("Latinx","Latinx"),
+                       ("Immigrant","Immigrant"),
+                       ("Journalism","Journalism"),
+                       ("Japanese","Japanese"),
+                       ("Jewish","Jewish"),
+                       ("Indigenous","Indigenous"),
+                       ("Science","Science"),
+                       ("Student Athlete","Student Athlete"),
+                       ("Teaching","Teaching"),
+                       ("Women in Math/Engineering","Women in Math/Engineering")],
+               validators=[Optional()])
     merit_based = BooleanField('Merit Based')
     service_based = BooleanField('Service Based')
     need_based = BooleanField('Need Based')
@@ -330,7 +381,33 @@ class EditScholarshipProfileStep2Form(Form):
         format='%Y-%m-%d',
         validators=[Optional()])
     award_amount = FloatField('Award Amount', validators=[InputRequired()])
-    category = StringField('Category of Scholarship (If none, put General)', validators=[Optional()])
+    category = SelectField('Category of Scholarship (If none, put General)',
+               choices=[("General","General"),
+                       ("African American","African American"),
+                       ("Agriculture","Agriculture"),
+                       ("Arts","Arts"),
+                       ("Asian","Asian"),
+                       ("Asian Pacific American","Asian Pacific American"),
+                       ("Community Service","Community Service"),
+                       ("Construction","Construction"),
+                       ("Disability","Disability"),
+                       ("Engineering","Engineering"),
+                       ("Environmental","Environmental"),
+                       ("Female","Female"),
+                       ("Filipino","Filipino"),
+                       ("First Generation","First Generation"),
+                       ("Queer","Queer"),
+                       ("Latinx","Latinx"),
+                       ("Immigrant","Immigrant"),
+                       ("Journalism","Journalism"),
+                       ("Japanese","Japanese"),
+                       ("Jewish","Jewish"),
+                       ("Indigenous","Indigenous"),
+                       ("Science","Science"),
+                       ("Student Athlete","Student Athlete"),
+                       ("Teaching","Teaching"),
+                       ("Women in Math/Engineering","Women in Math/Engineering")],
+               validators=[Optional()])
     merit_based = BooleanField('Merit Based')
     service_based = BooleanField('Service Based')
     need_based = BooleanField('Need Based')

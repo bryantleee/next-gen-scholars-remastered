@@ -118,10 +118,11 @@ def get_state_name_from_abbreviation(state):
 # you can always add http because it will get bumped up to https if available, 
 # but you can't bump down from https to http
 def fix_url(url):
-    match = re.search('^https?:\/\/', url)
-    if not match:
-        url = 'http://' + url
-    return url
+    if url:
+        match = re.search('^https?:\/\/', url)
+        if not match:
+            url = 'http://' + url
+        return url
 
 
 # will parse out the Collegecard ID from either URL or raw id input. 
@@ -136,6 +137,12 @@ def interpret_scorecard_input(form_input):
         if group is not None:
             return group
     return ''
+
+def extract_url_or_name(form_input):
+    matches = re.findall('^.*collegescorecard.ed.gov/school/\?(\d+).*$', form_input.strip())
+    if matches:
+        return int(matches[0]), 'scorecard_id'
+    return form_input, 'name'
 
 def get_colors():
     return ('red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink')

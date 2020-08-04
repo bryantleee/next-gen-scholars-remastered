@@ -22,6 +22,7 @@ class Acceptance(db.Model):
 
     @validates('status')
     def validate_status(self, key, status):
+        return status # Right now it's a free text entry box. Maybe we'll restrict in the future
         assert status in ['Accepted with award letter', 'Accepted', 'Pending Award Letter Parsing'
         ]
         return status

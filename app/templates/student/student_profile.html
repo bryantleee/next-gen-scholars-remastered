@@ -56,25 +56,25 @@
         <h3>Academic Information</h3>
       </div>
     </div>
-    <div class="nine wide column">
-      <div class="ui mini four statistics" style="justify-content: center;">
+    <div class="ten wide column">
+      <div class="ui mini four statistics stat_row">
         <div class="statistic">
-          <div class="label">Unweighted GPA</div>
+          <div class="stat_label label">Unweighted GPA</div>
           <span style="padding:0.3em;"></span>
           <div class="value">{{ user.student_profile.unweighted_gpa }}</div>
         </div>
         <div class="statistic">
-          <div class="label">Weighted GPA</div>
+          <div class="stat_label label">Weighted GPA</div>
           <span style="padding:0.3em"></span>
           <div class="value">{{ user.student_profile.weighted_gpa }}</div>
         </div>
         <div class="statistic">
-          <div class="label">SAT</div>
+          <div class="stat_label label">SAT</div>
           <span style="padding:0.3em"></span>
           <div class="value">{{ sat }}</div>
         </div>
         <div class="statistic">
-          <div class="label">ACT</div>
+          <div class="stat_label label">ACT</div>
           <span style="padding:0.3em"></span>
           <div class="value">{{ act }}</div>
         </div>
@@ -89,7 +89,7 @@
         Test Scores
       </div>
       <table class="ui compact table">
-        <thead class="full-width">
+        <thead class="full-width hide_row_headerm">
           <th>Test Name</th>
           <th>Date</th>
           <th>Score</th>
@@ -99,7 +99,7 @@
         </thead>
         <tbody>
           {% if user.student_profile.test_scores|length > 0 %} {% for test in user.student_profile.test_scores|sort(attribute='name') %}
-          <tr>
+          <tr class="centerm">
             <td>{{ test.name }}</td>
             <td>{{ test.month }} {{ test.year }}</td>
             <td>{{ test.score|string }}</td>
@@ -111,17 +111,17 @@
             </td>
           </tr>
           {% endfor %} {% else %}
-          <tr>
+          <tr class="centerm">
             <td colspan="4">
               No test scores.
             </td>
           </tr>
           {% endif %}
         </tbody>
-        <tfoot class="full-width">
-          <tr>
+        <tfoot class="student_profile_footer_rightd_centerm full-width">
+          <tr class="centerm">
             <th colspan="4">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_test_score', student_profile_id=user.student_profile.id)}}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.add_test_score', student_profile_id=user.student_profile.id)}}">
                 <i class="plus icon"></i> Add Test Score
               </a>
             </th>
@@ -138,12 +138,12 @@
         Majors of Interest
       </div>
       <table class="ui compact table">
-        <thead class="full-width">
+        <thead class="full-width hide_row_headerm">
           <th colspan="2">Major</th>
         </thead>
         <tbody>
           {% if user.student_profile.majors|length > 0 %} {% for major in user.student_profile.majors|sort(attribute='name') %}
-          <tr>
+          <tr class="centerm">
             <td>{{ major.name }}</td>
             <td class="collapsing">
               <div class="ui icon red basic tiny button delete-major-button" data-id="{{ major.id }}">
@@ -152,17 +152,17 @@
             </td>
           </tr>
           {% endfor %} {% else %}
-          <tr>
+          <tr class="centerm">
             <td colspan="2">
               No majors.
             </td>
           </tr>
           {% endif %}
         </tbody>
-        <tfoot class="full-width">
-          <tr>
+        <tfoot class="student_profile_footer_rightd_centerm full-width">
+          <tr class="centerm">
             <th colspan="2">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_major', student_profile_id=user.student_profile.id) }}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.add_major', student_profile_id=user.student_profile.id) }}">
                 <i class="plus icon"></i> Add Major
               </a>
             </th>
@@ -176,12 +176,12 @@
         Colleges of Interest
       </div>
       <table class="ui compact table">
-        <thead class="full-width">
+        <thead class="full-width hide_row_headerm">
           <th colspan="2">College</th>
         </thead>
         <tbody>
           {% if user.student_profile.colleges|length > 0 %} {% for college in user.student_profile.colleges|sort(attribute='name') %}
-          <tr>
+          <tr class="centerm">
             <td>{{ college.name }}</td>
             <td class="collapsing">
               <a class="ui labeled icon basic tiny button" href="/student/college_profile/{{ college.id }}">
@@ -193,22 +193,22 @@
             </td>
           </tr>
           {% endfor %} {% else %}
-          <tr>
+          <tr class="centerm">
             <td colspan="2">
               No colleges.
             </td>
           </tr>
           {% endif %}
         </tbody>
-        <tfoot class="full-width">
+        <tfoot class="full-width student_profile_footer_rightd_centerm">
           <tr>
             <th colspan="1">
-              <a class="ui left floated small green basic labeled icon button" href="{{ url_for('student.comparer', student_profile_id=user.student_profile.id) }}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.comparer', student_profile_id=user.student_profile.id) }}">
                 <i class="exchange icon"></i>College Comparer
               </a>
             </th>
             <th colspan="1">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_college', student_profile_id=user.student_profile.id) }}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.add_college', student_profile_id=user.student_profile.id) }}">
                 <i class="plus icon"></i> Add College
               </a>
             </th>
@@ -226,7 +226,7 @@
       </div>
       <div style="color: #2AB088;" class="ui horizontal divider">Essays</div>
       <table class="ui compact table">
-        <thead class="full-width">
+        <thead class="full-width hide_row_headerm">
           <th>Essay</th>
           <th>Status</th>
           <th></th>
@@ -234,11 +234,11 @@
         <tbody>
           <!-- COMMON APP ESSAY -->
           {% if user.student_profile.common_app_essay|length > 0 %} {% if user.student_profile.common_app_essay_status=='Incomplete' %}
-          <tr class="negative">
+          <tr class="centerm negative">
           {% elif user.student_profile.common_app_essay_status=='Done' %}
-          <tr class="positive">
+          <tr class="centerm positive">
           {% else %}
-          <tr class="warning">
+          <tr class="centerm warning">
           {% endif %}
             <td>Common App Essay</td>
             <td>{{ user.student_profile.common_app_essay_status }}</td>
@@ -260,11 +260,11 @@
           {% endif %}
           <!-- SUPPLEMENTAL ESSAYS -->
           {% if user.student_profile.essays|length > 0 %} {% for essay in user.student_profile.essays|sort(attribute='name') %} {% if essay.status=='Incomplete' %}
-          <tr class="negative">
+          <tr class="centerm negative">
           {% elif essay.status=='Done' %}
-          <tr class="positive">
+          <tr class="centerm positive">
           {% else %}
-          <tr class="warning">
+          <tr class="centerm warning">
           {% endif %}
             <td>{{ essay.name }}</td>
             <td>{{ essay.status }}</td>
@@ -284,20 +284,20 @@
             </td>
           </tr>
           {% endfor %} {% elif user.student_profile.common_app_essay|length == 0 %}
-          <tr>
+          <tr class="centerm">
             <td colspan="3">
               No essays.
             </td>
           </tr>
           {% endif %}
         </tbody>
-        <tfoot class="full-width">
-          <tr>
+        <tfoot class="full-width student_profile_footer_rightd_centerm">
+          <tr class="centerm">
             <th colspan="3">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_supplemental_essay', student_profile_id=user.student_profile.id) }}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.add_supplemental_essay', student_profile_id=user.student_profile.id) }}">
                 <i class="plus icon"></i> Add Supplemental Essay
               </a> {% if user.student_profile.common_app_essay|length == 0 %}
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_common_app_essay', student_profile_id=user.student_profile.id) }}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.add_common_app_essay', student_profile_id=user.student_profile.id) }}">
                 <i class="plus icon"></i> Add Common App Essay
               </a> {% endif %}
             </th>
@@ -312,46 +312,49 @@
     <div class="twelve wide column">
       <div style="color: #2AB088;" class="ui horizontal divider">Recommendation Letters</div>
       <table class="ui compact table">
-        <thead class="full-width">
+        <thead class="full-width hide_row_headerm">
           <th>Name</th>
           <th>Description</th>
           <th>Status</th>
           <th></th>
         </thead>
         <tbody>
-          {% if user.student_profile.recommendation_letters|length > 0 %} {% for letter in user.student_profile.recommendation_letters|sort(attribute='name') %} {% if letter.status=='Incomplete' %}
-          <tr class="negative">
-            {% elif letter.status=='Submitted' %}
-            <tr class="positive">
-              {% else %}
-              <tr class="warning">
-                {% endif %}
-                <td>{{ letter.name }}</td>
-                <td>{{ letter.category }}</td>
-                <td>{{ letter.status }}</td>
-                <td class="collapsing">
-                  <div class="ui tiny buttons">
-                    <a class="ui icon blue basic button" href="/student/profile/recommendation_letter/edit/{{ letter.id }}">
-                      <i class="edit icon"></i>
-                    </a>
-                    <div class="ui icon red basic button delete-letter-button" data-id="{{ letter.id }}">
-                      <i class="x icon"></i>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %} {% else %}
-              <tr>
-                <td colspan="4">
-                  No recommendation letters.
-                </td>
-              </tr>
-              {% endif %}
+          {% if user.student_profile.recommendation_letters|length > 0 %}
+          {% for letter in user.student_profile.recommendation_letters|sort(attribute='name') %}
+          {% if letter.status=='Incomplete' %}
+          <tr class="centerm negative">
+          {% elif letter.status=='Submitted' %}
+          <tr class="centerm positive">
+          {% else %}
+          <tr class="centerm warning">
+          {% endif %}
+          <td>{{ letter.name }}</td>
+          <td>{{ letter.category }}</td>
+          <td>{{ letter.status }}</td>
+          <td class="collapsing">
+            <div class="ui tiny buttons">
+              <a class="ui icon blue basic button" href="/student/profile/recommendation_letter/edit/{{ letter.id }}">
+                <i class="edit icon"></i>
+              </a>
+              <div class="ui icon red basic button delete-letter-button" data-id="{{ letter.id }}">
+                <i class="x icon"></i>
+              </div>
+            </div>
+          </td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr class="centerm">
+            <td colspan="4">
+              No recommendation letters.
+            </td>
+          </tr>
+          {% endif %}
         </tbody>
-        <tfoot class="full-width">
-          <tr>
+        <tfoot class="student_profile_footer_rightd_centerm full-width">
+          <tr class="centerm">
             <th colspan="4">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for('student.add_recommendation_letter', student_profile_id=user.student_profile.id) }}">
+              <a class="ui small green basic labeled icon button" href="{{ url_for('student.add_recommendation_letter', student_profile_id=user.student_profile.id) }}">
                 <i class="plus icon"></i> Add Recommendation Letter
               </a>
             </th>
@@ -366,12 +369,11 @@
   <div class="row">
     <div class="twelve wide column">
       <div style="color: #2AB088;" class="ui horizontal divider">
-        <h3>Acceptances</h3>
+        <h3>Application Status</h3>
       </div>
       <div style="color: #2AB088;" class="ui horizontal divider">Colleges</div>
       <table class="ui compact table">
-        <thead class="full-width">
-          <th>Cost of Attendance</th>
+        <thead class="full-width hide_row_headerm">
           <th>College</th>
           <th>Status</th>
           <th></th>
@@ -379,20 +381,17 @@
         <tbody class="full-width">
           {% if user.student_profile.acceptances|length > 0 %} {% for acceptance in
             user.student_profile.acceptances|sort(attribute='college') %}
-            <tr>
-              {% if acceptance.net_cost >= 0 %}
-              <td><a href="/student/acceptance/{{ acceptance.id }}/{{ user.student_profile.id }}">{{ acceptance.net_cost }}</a></td>
-              {% else %}
-              <td>Pending Award Parsing</td>
-              {% endif %}
+            <tr class="centerm">
               <td>{{ acceptance.college }}</td>
               <td>{{ acceptance.status }}</td>
               <td class="collapsing">
-                <div class="ui tiny buttons">
+                <div class="ui tiny buttons" style="float: right">
+                  {% if acceptance.link %}
                   <a class="ui basic tiny labeled icon button" href="{{ acceptance.link }}"   target="_blank">
                       <i class="external icon"></i>
                       Award Letter
                     </a>
+                  {% endif %}
                     <a class="ui icon blue basic button"
                       href="/student/profile/acceptance/edit/{{ acceptance.id }}">
                       <i class="edit icon"></i>
@@ -405,19 +404,19 @@
               </td>
             </tr>
             {% endfor %}{% else %}
-            <tr>
+            <tr class="centerm">
               <td colspan="4">
-                No acceptances added.
+                No acceptances added (yet 😉)!
               </td>
             </tr>
             {% endif %}
         </tbody>
-        <tfoot class="full-width">
-          <tr>
+        <tfoot class="student_profile_footer_rightd_centerm full-width">
+          <tr class="centerm">
             <th colspan="4">
-              <a class="ui right floated small green basic labeled icon button" href="{{ url_for
+              <a class="ui small green basic labeled icon button" href="{{ url_for
                 ('student.add_acceptance', student_profile_id=user.student_profile.id) }}">
-                <i class="plus icon"></i>Add Acceptance
+                <i class="plus icon"></i>Add Status
               </a>
             </th>
           </tr>
@@ -432,7 +431,7 @@
       <div class="twelve wide column" style="padding-bottom: 50px;">
       <div style="color: #2AB088;" class="ui horizontal divider">Scholarships</div>
         <table class="ui compact table">
-          <thead class="full-width">
+          <thead class="full-width hide_row_headerm">
             <th>Name</th>
             <th>Award Amount</th>
             <th></th>
@@ -440,7 +439,7 @@
           <tbody class="full-width">
             {% if user.student_profile.scholarships|length > 0 %} {% for scholarship in
               user.student_profile.scholarships|sort(attribute='name') %}
-              <tr>
+              <tr class="centerm">
                 <td>{{ scholarship.name }}</td>
                 <td>{{ "${:,.2f}".format(scholarship.award_amount) }}</td>
                 <td class="collapsing">
@@ -457,17 +456,17 @@
                 </td>
               </tr>
               {% endfor %}{% else %}
-              <tr>
+              <tr class="centerm">
                 <td colspan="4">
                   No scholarships added.
                 </td>
               </tr>
               {% endif %}
           </tbody>
-          <tfoot class="full-width">
-            <tr>
+          <tfoot class="student_profile_footer_rightd_centerm full-width">
+            <tr class="centerm">
               <th colspan="4">
-                <a class="ui right floated small green basic labeled icon button" href="{{ url_for
+                <a class="ui small green basic labeled icon button" href="{{ url_for
                   ('student.add_student_scholarship', student_profile_id=user.student_profile.id) }}">
                   <i class="plus icon"></i>Add Scholarship
                 </a>

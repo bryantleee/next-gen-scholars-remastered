@@ -206,7 +206,6 @@ table.selectable tr:hover {
 
 .college_info_section_header{
   color:#1A85D6 !important;
-  margin-bottom:5px;
 }
 
 .college_info{
@@ -254,6 +253,10 @@ table.selectable tr:hover {
   justify-content: space-evenly;
 }
 
+.card_container{
+  margin: auto !important;
+}
+
 @media only screen and (max-width: 1200px) {
   .medium_stat_title {
     font-size: 25px;
@@ -267,8 +270,41 @@ table.selectable tr:hover {
     font-family: 'IBM Plex Serif', serif;
   
   }
+  .big_stat_title{
+    font-size: 40px;
+  }
 }
 
+.student_profile_footer_rightd_centerm{
+  text-align: right;
+}
+
+@media only screen and (max-width: 768px) {
+  .hide_row_headerm {
+      display: none !important;
+  }
+  .student_profile_footer_rightd_centerm{
+    text-align: center;
+  }
+  .centerm{
+    text-align: center;
+    font-size: 16px;
+  }
+}
+
+.stat_label{
+  margin-right: 5px;
+  margin-left:5px;
+}
+
+.statistic{
+  margin-left: 50px;
+  margin-right: 50px;;
+}
+
+.stat_row{
+  justify-content: center !important;
+}
 
 /*index*/
 #main_header{
@@ -293,8 +329,6 @@ table.selectable tr:hover {
 }
 
 .parallax_container{
-  /* height: 100%; */
-
   /* Create the parallax scrolling effect */
   background-attachment: fixed;
   background-repeat: no-repeat;

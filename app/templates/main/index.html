@@ -34,13 +34,9 @@
 <div class="ui inverted vertical masthead center aligned segment parallax_container" id="main_banner">
     <div id="main_header_container" class="ui text container" >
         <h1 class="ui inverted header" id="main_header">
-            Next Generation Scholars Portal
+            Admit-Ed
         </h1>
-<<<<<<< HEAD
-        <h2>The best tools for the college admission process, made by and for NGS students</h2> <br />
-=======
         <h2 id="main_header_2">The best way for students and counselors to communicate through the college application process</h2> <br />
->>>>>>> 54f4956f910d2e1ae924ea36d4563a2f5c0f039e
         {% if not current_user.is_authenticated %}
             <a class="ui huge primary button" style="background-color:#FF4249" href="{{url_for('account.login')}}">
                 Get Started
@@ -64,8 +60,7 @@
                     Administrators can invite and manage users, as well as add colleges and scholarships. Administrators can
                     assign default tasks to students, view and manage student profiles, evaluate progress
                     on important college application steps, such as recommendation letters and supplemental essays, as well
-                    as access and update the calendar. Counselors also have the option to add new colleges and scholarships
-                    for students to explore.
+                    as access and update the calendar.
 
                     {{ page.render_inline_editor(editable_html_obj, current_user) }}
                 </p>
@@ -89,7 +84,8 @@
             <div class="column">
                 <img
                   class="ui centered small circular image"
-                  src="{{url_for('static',filename='images/user-avatar.jpg')}}"
+                  src="{{url_for('static',filename='images/wilner_and_co.jpeg')}}"
+                  style="width:200px;height:150px;"
                 />
                 <h1 class="ui header">Students</h1>
                 <p>
@@ -119,7 +115,7 @@
                         software that meets important social and humanitarian needs.
                     </p>
                     <a class="ui huge primary button" style="background-color:#FF4249" href="http://hack4impact.org">
-                        Get More Information
+                        Learn more
                         <i class="right arrow icon"></i>
                     </a>
                 </div>
@@ -134,40 +130,15 @@
     </div>
 
 
-    <!-- <div class="twelve wide computer sixteen wide mobile column">
-        <h1 class="ui dividing header">Messages</h1> <br />
-        <div class="ui two column centered grid">
-            {{ message_option('FAFSA', 'https://studentaid.ed.gov/sa/fafsa',
-                'https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_1440,w_720,f_auto,q_auto/1320747/AR-310039872_oxkllq.png',
-                'Due on 3/2 -- Update your progress in your profile and tasks!') }}
-
-            {{ message_option('10,000 DEGREES', 'http://www.10000degrees.org/undergraduate-scholarships/',
-                'https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_1440,w_720,f_auto,q_auto/1320747/10k-logo_jqjaoq.png',
-                'Due on 3/2 -- Update your progress in your profile and tasks!') }}
-
-            {{ message_option('CA Dream Act', 'https://dream.csac.ca.gov/',
-                'https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_1440,w_720,f_auto,q_auto/1320747/CA_Dream_Act_logo_lgh0xl.jpg',
-                'Due on 3/2 -- Update your progress in your profile and tasks!') }}
-        </div>
-    </div> -->
-
-
-
     <div class="twelve wide computer sixteen wide mobile column">
         <div class="row">
             <h1 class="ui dividing header">Upcoming Events</h1>
             <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;";>
-                <iframe src="https://calendar.google.com/calendar/embed?src=ngs4impact%40gmail.com&ctz=America%2FLos_Angeles" style="position: absolute; top:0; left: 0; width: 100%; height: 100%; border:none;"></iframe>
+                <iframe src="https://calendar.google.com/calendar/embed?src=nextgenerationscholars.org_d1bj3m6vubuahnfcd7qg28tbv0%40group.calendar.google.com&ctz=America%2FLos_Angeles" style="position: absolute; top:0; left: 0; width: 100%; height: 100%; border:none;"></iframe>
             </div>
         </div>
     </div>
 
-    <!-- <div class="twelve wide computer sixteen wide mobile column">
-        <div class="row">
-            <h1 class="ui dividing header">Survey</h1>
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdUGSDIw98c_E45nkGF_dYQ4gtp7vKwv1LpQxA7YcESA0j-eg/viewform?embedded=true" style="border: 0" width="100%" height="650" frameborder="0"></iframe>
-        </div>
-    </div> -->
 </div>
 
 <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>

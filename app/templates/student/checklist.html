@@ -3,14 +3,14 @@
 
 {% macro render_checklist(checklist) %}
     <table class="ui table">
-        <thead>
+        <thead class="hide_row_headerm">
             <tr><th colspan="3">
               Upcoming
             </th>
         </tr></thead>
         {% if checklist|length > 0 %}
     	{% for item in checklist %}
-            <tr>
+            <tr class="centerm">
                 <td class = "collapsing">
                     <a class="ui small basic icon button" href="{{ url_for('student.complete_checklist_item', item_id=item.id) }}">
                         <i class="checkmark box icon"></i>
@@ -28,8 +28,8 @@
                 </td>
             	<td class="two wide">
                     {% if item.deadline %}
-                        <b {% if today > item.deadline %} style="color:red;" {% endif %}> 
-                            {{  '%s' % (item.deadline.strftime('%m-%d-%Y'))  }} 
+                        <b {% if today > item.deadline %} style="color:red;" {% endif %}>
+                            {{  '%s' % (item.deadline.strftime('%m-%d-%Y'))  }}
                         </b>
                     {% endif %}
                 </td>
@@ -38,7 +38,7 @@
         {% else %}
           <tr>
             <td colspan="4">
-              No tasks.
+              No tasks 😁
             </td>
           </tr>
           {% endif %}
@@ -47,14 +47,14 @@
 
 {% macro completed_list(completed) %}
     <table class="ui table">
-        <thead>
+        <thead class="hide_row_headerm">
             <tr><th colspan="2">
               Completed
             </th>
         </tr></thead>
         {% if completed|length > 0 %}
         {% for item in completed %}
-            <tr class="positive">
+            <tr class="centerm positive">
                 <td class="collapsing">
                     <a class="ui small basic icon button" href="{{ url_for('student.undo_checklist_item', item_id=item.id) }}">
                         <i class="undo icon"></i>
@@ -84,7 +84,7 @@
 <div class="ui stackable centered grid container" style="margin-top:12px; margin-bottom:64px">
     <div class="twelve wide computer sixteen wide mobile column">
         <h2 class="ui dividing header">
-            Tasks
+            Tasks 📝
             <div class="sub header">Keep track of your tasks and deadlines</div>
         </h2>
         {% if notifications %}

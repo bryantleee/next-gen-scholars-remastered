@@ -9,7 +9,6 @@
                     View and edit colleges and their deadlines.
                 </div>
             </h2>
-
             <div class="ui menu">
                 <div class="ui search item">
                     <div class="ui transparent icon input">
@@ -18,7 +17,7 @@
                     </div>
                 </div>
                 <div class="ui item">
-                    <a class="ui black basic button" href="{{ url_for('counselor.add_college') }}">Add College via This Website</a>
+                    <a class="ui black basic button" href="{{ url_for('counselor.add_college') }}">Add College Manually</a>
                 </div>
                 <div class="ui item">
                     <a class="ui black basic button" href="{{ url_for('counselor.upload_college_file') }}">Add College via Excel</a>
@@ -30,6 +29,11 @@
 
             {# Use overflow-x: scroll so that mobile views don't freak out
              # when the table is too wide #}
+             {% if has_errors %}  <div style="margin-top:5px; margin-bottom:10px; color:red;" class="sub header">
+                Data for some colleges could not be found. These rows are highlighted in red. Please edit the colleges with the CollegeScorecard URL to fix these errors.
+             </div>
+            {% endif %}
+
             <div style="overflow-x: scroll;">
                 <table class="ui searchable sortable unstackable selectable celled table">
                     <thead>
@@ -45,25 +49,28 @@
                     <!--TODO: Make everything under the same onclick.-->
 
                     {% for c in colleges | sort(attribute='name') %}
+                        <tr
+                            {% if not c.scorecard_id %} style="background-color:#FFB6C1;" {%endif%}
+                        >
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">{{ c.name }}</td>
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">{{ c.description }}</td>
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">
                                 {% if c.regular_deadline is none %}
                                     No Data
                                 {% else %}
-                                    {{ c.regular_deadline.strftime('%m-%d-%Y') }}     
-                                {% endif %} 
+                                    {{ c.regular_deadline.strftime('%m-%d-%Y') }}
+                                {% endif %}
                             </td>
 
                             <td onclick="window.location.href = '{{ url_for('counselor.edit_college_step2', college_id=c.id) }}';">
-                            
+
                              {% if c.early_deadline is none %}
                                    No Data
                                 {% else %}
                                     {{ c.early_deadline.strftime('%m-%d-%Y') }}
-                                {% endif %} 
+                                {% endif %}
                             </td>
-                            
+
                             <td><div class="ui basic button" onclick="window.location.href = '{{ url_for('student.view_college_profile', college_id=c.id) }}';">View Profile</div></td>
                         </tr>
                     {% endfor %}

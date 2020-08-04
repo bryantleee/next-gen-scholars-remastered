@@ -13,15 +13,15 @@ from .forms import (ChangeAccountTypeForm, ChangeUserEmailForm, InviteUserForm,
                     NewSMSAlertForm, EditSMSAlertForm, ParseAwardLetterForm,
                     AddScholarshipProfileForm, EditScholarshipProfileStep1Form,
                     EditScholarshipProfileStep2Form,EditResourceForm, AddResourceForm,
-                    DeleteScholarshipProfileForm)
+                    DeleteScholarshipProfileForm, EditStudentProfile)
 from . import counselor
 from ..decorators import counselor_required
 from ..decorators import admin_required
 from ..email import send_email
 from ..models import (Role, User, College, StudentProfile, EditableHTML,
                       ChecklistItem, TestName, College, Notification, SMSAlert,
-                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input, 
-                      get_colors, Resource, validate_scattergram_csv)
+                      ScattergramData, Acceptance, Scholarship, fix_url, interpret_scorecard_input,
+                      get_colors, Resource, validate_csvs, extract_url_or_name)
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -46,6 +46,53 @@ def index():
     """Counselor dashboard page."""
     return render_template('counselor/index.html')
 
+@counselor.route(
+    '/profile/edit/<int:student_profile_id>', methods=['GET', 'POST'])
+@login_required
+@counselor_required
+def edit_profile(student_profile_id):
+    # only allows the student or counselors/admins to edit a student's profile
+    if student_profile_id != current_user.student_profile_id and current_user.role_id == 1:
+        abort(404)
+    # Allow user to update basic profile information.
+    student_profile = StudentProfile.query.filter_by(
+        id=student_profile_id).first()
+    if student_profile:
+        form = EditStudentProfile(
+            grade=student_profile.grade,
+            high_school=student_profile.high_school,
+            phone_number=student_profile.phone_number,
+            graduation_year=student_profile.graduation_year,
+            city=student_profile.city,
+            state=student_profile.state,
+            fafsa_status=student_profile.fafsa_status,
+            unweighted_gpa=student_profile.unweighted_gpa,
+            weighted_gpa=student_profile.weighted_gpa,
+            note=student_profile.note)
+        if form.validate_on_submit():
+            # Update user profile information.
+            student_profile.grade = form.grade.data
+            student_profile.high_school = form.high_school.data
+            student_profile.phone_number = form.phone_number.data
+            student_profile.graduation_year = form.graduation_year.data
+            student_profile.city = form.city.data
+            student_profile.state = form.state.data
+            student_profile.fafsa_status = form.fafsa_status.data
+            student_profile.unweighted_gpa = form.unweighted_gpa.data
+            student_profile.weighted_gpa = form.weighted_gpa.data
+            student_profile.note = form.note.data
+            db.session.add(student_profile)
+            db.session.commit()
+            user = User.query.filter_by(
+                student_profile_id=student_profile_id).first()
+            return redirect(url_for(
+                'counselor.view_user_profile', user_id=user.id))
+        return render_template(
+            'counselor/update_profile.html',
+            form=form,
+            student_profile_id=student_profile.id)
+    abort(404)
+
 
 @counselor.route('/scholarships')
 @login_required
@@ -53,10 +100,10 @@ def index():
 def scholarships():
     """View all scholarships"""
     scholarships = Scholarship.query.all()
-    category_list = ["African-American","Agriculture","Arts-related","Asian","Asian Pacific American","Community Service",
-            "Construction Related Fields","Disabled","Engineering","Environmental Interest","Female","Filipino","First Generation College Student",
-            "Queer","General","Latinx","Immigrant/AB540/DACA","Interest in Journalism","Japanese","Jewish","Indigenous","Science/Engineering",
-            "Student-Athlete","Teaching","Women in Math/Engineering"]
+    category_list = ["African American","Agriculture","Arts","Asian","Asian Pacific American","Community Service",
+            "Construction","Disability","Engineering","Environmental","Female","Filipino","First Generation",
+            "Queer","General","Latinx","Immigrant","Journalism","Japanese","Jewish","Indigenous","Science",
+            "Student Athlete","Teaching","Women in Math/Engineering"]
     return render_template('counselor/scholarships.html', scholarships=scholarships, category_list=category_list)
 
 @csrf.exempt
@@ -102,7 +149,8 @@ def upload_scholarship_file():
 def colleges():
     """View all colleges."""
     colleges = College.query.all()
-    return render_template('counselor/colleges.html', colleges=colleges)
+    has_errors = College.query.filter(College.scorecard_id == None).first()
+    return render_template('counselor/colleges.html', colleges=colleges, has_errors=has_errors)
 
 
 @csrf.exempt
@@ -111,59 +159,54 @@ def colleges():
 @counselor_required
 def upload_college_file():
     if request.method == 'POST':
+        #read from file
         f = request.files['file']
+        stream = io.StringIO(f.stream.read().decode("utf-8"))
+        success, df = validate_csvs.validate_college_csv(stream)
 
-        stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
-        csv_input = csv.reader(stream)
-        header_row = True
-        for row in csv_input:
-            if header_row:
-                header_row = False
-                continue
-            if len(row) >= 9 and any(row):
-                # check that there are at least eight columns
-                # and the row is not completely blank
-                college = College.query.filter_by(name=row[0]).first()
-                # College didn't already exist in database, so add it.
+        if not success:
+            message, message_type = str(df), 'negative'
+        else:
+            message, message_type = 'Upload successful!', 'positive'
+            for row in df.iterrows():
+                college_name = row[1]['College']
+                college = College.query.filter_by(name=college_name).first()
                 if college is None:
+                # College didn't already exist in database, so add it.
                     college = College(
-                        name=row[0],
-                        description=row[1],
-                        gpa_unweighted_average_overall=row[2],
-                        regular_deadline=datetime.datetime.strptime(
-                            row[3], "%m/%d/%y") if row[3] else None,
-                        early_deadline=datetime.datetime.strptime(
-                            row[4], "%m/%d/%y") if row[4] else None,
-                        fafsa_deadline=datetime.datetime.strptime(
-                            row[5], "%m/%d/%y") if row[5] else None,
-                        acceptance_deadline=datetime.datetime.strptime(
-                            row[6], "%m/%d/%y") if row[6] else None,
-                        scholarship_deadline=datetime.datetime.strptime(
-                            row[7], "%m/%d/%y") if row[7] else None,
-                        image = row[8]
+                        name=college_name,
+                        scorecard_id = None,
+                        description=row[1]['Description'],
+                        gpa_unweighted_average_overall=row[1]['Unweighted GPA'],
+                        regular_deadline=row[1]['Regular Deadline (RD)'].to_pydatetime() if not pd.isnull(row[1]['Regular Deadline (RD)']) else None,
+                        early_deadline=row[1]['Early Deadline (ED)'].to_pydatetime() if not pd.isnull(row[1]['Early Deadline (ED)']) else None,
+                        scholarship_deadline=row[1]['Scholarship Deadline'].to_pydatetime() if not pd.isnull(row[1]['Scholarship Deadline']) else None,
+                        fafsa_deadline=row[1]['FAFSA Deadline'].to_pydatetime() if not pd.isnull(row[1]['FAFSA Deadline']) else None,
+                        acceptance_deadline=row[1]['Acceptance Announcement Date'],
+                        school_url = "",
+                        school_size = 0,
+                        school_city = "",
+                        tuition_in_state = 0,
+                        tuition_out_of_state = 0,
+                        cost_of_attendance_in_state = 0,
+                        cost_of_attendance_out_of_state = 0,
+                        room_and_board = 0,
+                        sat_score_average_overall = 0,
+                        act_score_average_overall = 0
                     )
-                    College.retrieve_college_info(college)
-
-                # else update the existing college
                 else:
-                    college.description = row[1]
-                    college.gpa_unweighted_average_overall = row[2]
-                    college.regular_deadline = datetime.datetime.strptime(
-                            row[3], "%m/%d/%y") if row[3] else None
-                    college.early_deadline = datetime.datetime.strptime(
-                            row[4], "%m/%d/%y") if row[4] else None
-                    college.fafsa_deadline = datetime.datetime.strptime(
-                            row[5], "%m/%d/%y") if row[5] else None
-                    college.acceptance_deadline = datetime.datetime.strptime(
-                            row[6], "%m/%d/%y") if row[6] else None
-                    college.scholarship_deadline = datetime.datetime.strptime(
-                            row[7], "%m/%d/%y") if row[7] else None
-                    college.image = row[7]
-                    College.retrieve_college_info(college)
+                    college.description=row[1]['Description']
+                    college.gpa_unweighted_average_overall=row[1]['Unweighted GPA']
+                    college.regular_deadline=row[1]['Regular Deadline (RD)'].to_pydatetime() if not pd.isnull(row[1]['Regular Deadline (RD)']) else None
+                    college.early_deadline=row[1]['Early Deadline (ED)'].to_pydatetime() if not pd.isnull(row[1]['Early Deadline (ED)']) else None
+                    college.scholarship_deadline=row[1]['Scholarship Deadline'].to_pydatetime() if not pd.isnull(row[1]['Scholarship Deadline']) else None
+                    college.fafsa_deadline=row[1]['FAFSA Deadline'].to_pydatetime() if not pd.isnull(row[1]['FAFSA Deadline']) else None
+                    college.acceptance_deadline=row[1]['Acceptance Announcement Date']
+                College.retrieve_college_info(college)
                 db.session.add(college)
-        db.session.commit()
-        return redirect(url_for('counselor.colleges'))
-    return render_template('counselor/upload_colleges.html')
+            db.session.commit()
+        return render_template('counselor/upload_colleges.html', message=message, message_type=message_type)
+    return render_template('counselor/upload_colleges.html', message=None, message_type=None)
 
 
 @counselor.route('/new-user', methods=['GET', 'POST'])
@@ -537,16 +580,20 @@ def delete_test_name():
 @login_required
 @counselor_required
 def add_college():
-
     # Allows a counselor to add a college profile.
     form = AddCollegeProfileForm()
     if form.validate_on_submit():
-        name = College.query.filter_by(name=form.name.data).first()
-        if name is None:
+        extracted_value, val_type = extract_url_or_name(form.name.data)
+        if val_type == 'scorecard_id':
+            college = College.query.filter_by(scorecard_id=extracted_value).first()
+        else:
+            college = College.query.filter_by(name=extracted_value).first()
+
+        if college is None:
             # College didn't already exist in database, so add it.
             college = College(
-                name=form.name.data,
-                scorecard_id=interpret_scorecard_input(""),
+                name=extracted_value if val_type == 'name' else '',
+                scorecard_id=extracted_value if val_type == 'scorecard_id' else None,
                 description=form.description.data,
                 gpa_unweighted_average_overall=form.gpa_unweighted_average_overall.data,
                 early_deadline=form.early_deadline.data,
@@ -564,13 +611,8 @@ def add_college():
                 room_and_board = 0,
                 sat_score_average_overall = 0,
                 act_score_average_overall = 0)
-            add_worked = College.retrieve_college_info(college)
-            if not add_worked:
-                flash('Input Error. Please check your form over.')
-                return render_template(
-                    'counselor/add_college.html', form=form, header='Add College Profile')
+            College.retrieve_college_info(college, change_name=val_type=='scorecard_id')
             db.session.add(college)
-
         else:
             flash('College could not be added - already exists in database.',
                   'error')
@@ -584,16 +626,18 @@ def add_college():
 @login_required
 @counselor_required
 def edit_college_step1():
-    # Allows a counselor to choose which college they want to edit.
-    form = EditCollegeProfileStep1Form()
-    if form.validate_on_submit():
-        college = College.query.filter_by(name=form.name.data.name).first()
-        return redirect(
-            url_for('counselor.edit_college_step2', college_id=college.id))
-    return render_template(
-        'counselor/edit_college.html',
-        form=form,
-        header='Edit College Profile')
+    return redirect(
+            url_for('counselor.colleges'))
+#     # Allows a counselor to choose which college they want to edit.
+#     form = EditCollegeProfileStep1Form()
+#     if form.validate_on_submit():
+#         college = College.query.filter_by(name=form.name.data.name).first()
+#         return redirect(
+#             url_for('counselor.edit_college_step2', college_id=college.id))
+#     return render_template(
+#         'counselor/edit_college.html',
+#         form=form,
+#         header='Edit College Profile')
 
 
 @counselor.route('/edit_college/<int:college_id>', methods=['GET', 'POST'])
@@ -614,8 +658,11 @@ def edit_college_step2(college_id):
         acceptance_deadline=old_college.acceptance_deadline)
     if form.validate_on_submit():
         college = old_college
-        college.name = form.name.data
-        college.scorecard_id=interpret_scorecard_input("")
+        extracted_value, val_type = extract_url_or_name(form.name.data)
+        if val_type == 'scorecard_id':
+            college.scorecard_id=extracted_value
+        else:
+            college.name = extracted_value
         college.description = form.description.data
         college.gpa_unweighted_average_overall = form.gpa_unweighted_average_overall.data
         college.early_deadline = form.early_deadline.data
@@ -623,7 +670,7 @@ def edit_college_step2(college_id):
         college.scholarship_deadline = form.scholarship_deadline.data
         college.fafsa_deadline = form.fafsa_deadline.data
         college.acceptance_deadline = form.acceptance_deadline.data
-        College.retrieve_college_info(college)
+        College.retrieve_college_info(college, change_name=val_type=='scorecard_id')
         db.session.add(college)
         db.session.commit()
         flash('College profile successfully edited.', 'form-success')
@@ -740,27 +787,33 @@ def edit_alert(alert_id):
 @counselor_required
 def upload_scattergram():
     if request.method == 'POST':
-        valid_colleges = [college.name for college in College.query.all()]
-        valid_students = ['{} {}'.format(user.first_name, user.last_name) for user in User.query.all()]
-        
+        #valid_colleges = [college.name for college in College.query.all()]
+        #valid_students = ['{} {}'.format(user.first_name, user.last_name) for user in User.query.all()]
+
+        valid_colleges = None
+        valid_students = None
+
         #read from file
         f = request.files['file']
         stream = io.StringIO(f.stream.read().decode("utf-8"))
-        success, df = validate_scattergram_csv.validate_scattergram_csv(stream, valid_students, valid_colleges)
+        success, df = validate_csvs.validate_scattergram_csv(stream, valid_students, valid_colleges)
 
         if not success:
             message, message_type = df, 'negative'
         else:
             message, message_type = 'Upload successful!', 'positive'
+            db.session.query(ScattergramData).delete() # Delete previous data
             for row in df.iterrows():
                 point = ScattergramData(
                     name=row[1]['student name'],
                     college=row[1]['college'],
-                    status=row[1]['application status'],
+                    ed_status=row[1]['ed_status'],
                     GPA=row[1]['gpa'],
                     SAT2400=row[1]['sat2400'],
                     SAT1600=row[1]['sat1600'],
-                    ACT=row[1]['act']
+                    ACT=row[1]['act'],
+                    fin_aid_perc=row[1]['fin aid'],
+                    high_school=row[1]['high school']
                 )
                 db.session.add(point)
             db.session.commit()
@@ -768,7 +821,7 @@ def upload_scattergram():
         #     college = College.query.filter_by(name=name).first()
         #     if college:
         #         college.update_plots()
-       
+
         return render_template('counselor/upload_scattergram.html', message=message, message_type=message_type)
     return render_template('counselor/upload_scattergram.html', message=None, message_type=None)
 

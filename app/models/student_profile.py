@@ -31,6 +31,7 @@ class StudentProfile(db.Model):
     state = db.Column(db.String, index=True)
     graduation_year = db.Column(db.String, index=True)
     grade = db.Column(db.Integer, index=True)
+    note = db.Column(db.String, index=True)
     # ACADEMIC INFO
     unweighted_gpa = db.Column(db.Float, index=True)
     weighted_gpa = db.Column(db.Float, index=True)
@@ -48,7 +49,7 @@ class StudentProfile(db.Model):
         'Interest',
         secondary=student_interests,
         backref=db.backref('student_profiles', lazy='dynamic'))
-    
+
     # APPLICATION INFO
     # either 'Incomplete' or 'Complete'
     fafsa_status = db.Column(db.String, index=True, default='Incomplete')
@@ -92,6 +93,7 @@ class StudentProfile(db.Model):
             state=fake.state(),
             graduation_year=year[0],
             grade=year[1],
+            note="",
             unweighted_gpa=round(random.uniform(2, 4), 2),
             weighted_gpa=round(random.uniform(2,5), 2),
             test_scores=TestScore.generate_fake(),
@@ -118,6 +120,7 @@ class StudentProfile(db.Model):
         s += 'City, State: {}, {}\n'.format(self.city, self.state)
         s += 'Gradution Year: {}\n'.format(self.graduation_year)
         s += 'Grade: {}\n'.format(self.grade)
+        s += 'Note: {}\n'.format(self.note)
         s += 'Unweighted GPA: {}\n'.format(self.unweighted_gpa)
         s += 'Weighted GPA: {}\n'.format(self.weighted_gpa)
         s += 'Test Scores: {}\n'.format(self.test_scores)
