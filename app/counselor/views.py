@@ -33,6 +33,7 @@ import csv
 import io
 import logging
 import pandas as pd
+import math
 
 # TODO: remove before production?
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -129,12 +130,12 @@ def upload_scholarship_file():
                     description=row[1],
                     deadline=datetime.datetime.strptime(
                         row[2], "%m/%d/%y") if row[2] else None,
-                    award_amount = row[3],
+                    award_amount = row[3] if not math.isnan(row[3]) else None,
                     category = row[4],
                     merit_based = (row[5] == "Yes"),
                     service_based = (row[6] == "Yes" or row[6] == "yes"),
                     need_based = (row[7] == "Yes" or row[7] == "yes"),
-                    minimum_gpa = row[8],
+                    minimum_gpa = row[8] if not math.isnan(row[8]) else None,
                     interview_required = (row[9] == "Yes" or row[9] == "yes"),
                     link = fix_url(row[10])
                 )
@@ -177,22 +178,22 @@ def upload_college_file():
                         name=college_name,
                         scorecard_id = None,
                         description=row[1]['Description'],
-                        gpa_unweighted_average_overall=row[1]['Unweighted GPA'],
+                        gpa_unweighted_average_overall=row[1]['Unweighted GPA']  if not math.isnan(row[1]['Unweighted GPA']) else None,
                         regular_deadline=row[1]['Regular Deadline (RD)'].to_pydatetime() if not pd.isnull(row[1]['Regular Deadline (RD)']) else None,
                         early_deadline=row[1]['Early Deadline (ED)'].to_pydatetime() if not pd.isnull(row[1]['Early Deadline (ED)']) else None,
                         scholarship_deadline=row[1]['Scholarship Deadline'].to_pydatetime() if not pd.isnull(row[1]['Scholarship Deadline']) else None,
                         fafsa_deadline=row[1]['FAFSA Deadline'].to_pydatetime() if not pd.isnull(row[1]['FAFSA Deadline']) else None,
                         acceptance_deadline=row[1]['Acceptance Announcement Date'],
                         school_url = "",
-                        school_size = 0,
+                        school_size = 0 if not math.isnan(0) else None,
                         school_city = "",
-                        tuition_in_state = 0,
-                        tuition_out_of_state = 0,
-                        cost_of_attendance_in_state = 0,
-                        cost_of_attendance_out_of_state = 0,
-                        room_and_board = 0,
-                        sat_score_average_overall = 0,
-                        act_score_average_overall = 0
+                        tuition_in_state = 0 if not math.isnan(0) else None,
+                        tuition_out_of_state = 0 if not math.isnan(0) else None,
+                        cost_of_attendance_in_state = 0 if not math.isnan(0) else None,
+                        cost_of_attendance_out_of_state = 0 if not math.isnan(0) else None,
+                        room_and_board = 0 if not math.isnan(0) else None,
+                        sat_score_average_overall = 0 if not math.isnan(0) else None,
+                        act_score_average_overall = 0 if not math.isnan(0) else None
                     )
                 else:
                     college.description=row[1]['Description']
@@ -808,11 +809,11 @@ def upload_scattergram():
                     name=row[1]['student name'],
                     college=row[1]['college'],
                     ed_status=row[1]['ed_status'],
-                    GPA=row[1]['gpa'],
-                    SAT2400=row[1]['sat2400'],
-                    SAT1600=row[1]['sat1600'],
-                    ACT=row[1]['act'],
-                    fin_aid_perc=row[1]['fin aid'],
+                    GPA=            row[1]['gpa'] if not math.isnan(row[1]['gpa']) else None,
+                    SAT2400=        row[1]['sat2400'] if not math.isnan(row[1]['sat2400']) else None,
+                    SAT1600=        row[1]['sat1600'] if not math.isnan(row[1]['sat1600']) else None,
+                    ACT=            row[1]['act'] if not math.isnan(row[1]['act']) else None,
+                    fin_aid_perc=   row[1]['fin aid'] if not math.isnan(row[1]['fin aid']) else None,
                     high_school=row[1]['high school']
                 )
                 db.session.add(point)
